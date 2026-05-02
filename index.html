@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mocha Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0d0b;
+  --surface: #1a1714;
+  --surface2: #242018;
+  --border: #2e2820;
+  --accent: #c8893a;
+  --accent2: #e8a84a;
+  --text: #f0e8dc;
+  --text2: #a09080;
+  --text3: #6a5a4a;
+  --green: #4caf7d;
+  --red: #e05555;
+  --blue: #5599ee;
+  --yellow: #f0c040;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
+
+/* LAYOUT */
+#app { display: flex; flex-direction: column; min-height: 100vh; }
+.top-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
+.top-bar .logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+.top-bar .clock { margin-left: auto; font-size: 13px; color: var(--text2); }
+.main-content { flex: 1; padding: 16px; max-width: 900px; width: 100%; margin: 0 auto; }
+.bottom-nav { background: var(--surface); border-top: 1px solid var(--border); display: flex; position: sticky; bottom: 0; z-index: 100; }
+.nav-btn { flex: 1; padding: 12px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--text3); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 10px; transition: color .2s; }
+.nav-btn.active { color: var(--accent); }
+.nav-btn svg { width: 22px; height: 22px; }
+
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
+.card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+
+/* INPUTS */
+input, select, textarea { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 12px; width: 100%; outline: none; transition: border-color .2s; }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+input::placeholder { color: var(--text3); }
+select option { background: var(--surface2); }
+label { font-size: 12px; color: var(--text2); margin-bottom: 4px; display: block; }
+.form-group { margin-bottom: 10px; }
+.row { display: flex; gap: 10px; }
+.row > * { flex: 1; }
+
+/* BUTTONS */
+.btn { border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 10px 18px; cursor: pointer; transition: all .2s; letter-spacing: 0.3px; }
+.btn-primary { background: var(--accent); color: #0f0d0b; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent); }
+.btn-danger { background: var(--red); color: #fff; }
+.btn-success { background: var(--green); color: #0f0d0b; }
+.btn-blue { background: var(--blue); color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 11px; }
+.btn-full { width: 100%; }
+.btn-icon { background: none; border: none; cursor: pointer; color: var(--text2); padding: 4px; border-radius: 6px; }
+.btn-icon:hover { color: var(--accent); background: var(--surface2); }
+
+/* BADGES */
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-green { background: #4caf7d22; color: var(--green); }
+.badge-red { background: #e0555522; color: var(--red); }
+.badge-yellow { background: #f0c04022; color: var(--yellow); }
+.badge-blue { background: #5599ee22; color: var(--blue); }
+.badge-accent { background: #c8893a22; color: var(--accent); }
+
+/* TABS */
+.tabs { display: flex; gap: 4px; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 14px; }
+.tab { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--text2); transition: all .2s; border: none; background: none; }
+.tab.active { background: var(--accent); color: #0f0d0b; }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
+.modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
+.modal-footer .btn { flex: 1; }
+
+/* TIMER */
+.timer-display { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); text-align: center; letter-spacing: 2px; }
+.timer-label { font-size: 11px; color: var(--text2); text-align: center; }
+
+/* BILLING CARD */
+.billing-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; }
+.billing-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+.billing-card-name { font-weight: 600; font-size: 14px; }
+.billing-card-meta { font-size: 11px; color: var(--text2); }
+.billing-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+
+/* MEMBER INFO */
+.member-info-box { background: var(--surface2); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px; }
+.member-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
+.member-stats { display: flex; gap: 16px; margin-top: 6px; }
+.member-stat { text-align: center; }
+.member-stat .val { font-size: 20px; font-weight: 700; color: var(--accent); font-family: 'Syne', sans-serif; }
+.member-stat .lbl { font-size: 10px; color: var(--text2); }
+
+/* LIST ITEMS */
+.list-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px; }
+.list-item:last-child { border-bottom: none; }
+.list-item-info { flex: 1; }
+.list-item-name { font-size: 14px; font-weight: 500; }
+.list-item-sub { font-size: 11px; color: var(--text2); }
+
+/* STAT BOX */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+.stat-box .val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent); }
+.stat-box .lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* TOAST */
+.toast-container { position: fixed; top: 70px; right: 16px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 13px; max-width: 280px; animation: slideIn .3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+.toast.success { border-color: var(--green); }
+.toast.error { border-color: var(--red); }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+/* CART ITEM */
+.cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.cart-item-info { flex: 1; }
+.qty-ctrl { display: flex; align-items: center; gap: 8px; }
+.qty-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+/* CATEGORY SELECTOR */
+.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; cursor: pointer; transition: all .2s; text-align: center; }
+.cat-card:hover, .cat-card.selected { border-color: var(--accent); background: #c8893a15; }
+.cat-card .cat-icon { font-size: 28px; margin-bottom: 6px; }
+.cat-card .cat-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; }
+
+/* PACKAGE CARD */
+.pkg-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; cursor: pointer; transition: all .2s; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+.pkg-card:hover, .pkg-card.selected { border-color: var(--accent); }
+
+/* ADMIN MENU */
+.admin-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.admin-menu-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 14px; text-align: center; cursor: pointer; transition: all .2s; }
+.admin-menu-item:hover { border-color: var(--accent); background: #c8893a10; }
+.admin-menu-item .icon { font-size: 32px; margin-bottom: 8px; }
+.admin-menu-item .name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; }
+
+/* RESPONSIVE */
+@media (min-width: 600px) {
+  .stat-grid { grid-template-columns: repeat(3, 1fr); }
+  .cat-grid { grid-template-columns: repeat(3, 1fr); }
+  .admin-menu-grid { grid-template-columns: repeat(3, 1fr); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top-bar">
+    <div class="logo">☕ Mocha</div>
+    <div id="clock" class="clock"></div>
+  </div>
+  <div class="main-content" id="main-content"></div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="navigate('home')" id="nav-home">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Home
+    </button>
+    <button class="nav-btn" onclick="navigate('list')" id="nav-list">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      List
+    </button>
+    <button class="nav-btn" onclick="navigate('pos')" id="nav-pos">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="22" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+      POS
+    </button>
+    <button class="nav-btn" onclick="navigate('admin')" id="nav-admin">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Admin
+    </button>
+  </nav>
+</div>
+<div class="toast-container" id="toast-container"></div>
+<div id="modal-container"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, push, update, remove, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyASIgjZ_hqMFTmVJfRV8JnxmbbH78wCJY0",
+  authDomain: "bbq-butuh-bantuan-ku.firebaseapp.com",
+  databaseURL: "https://bbq-butuh-bantuan-ku-default-rtdb.firebaseio.com",
+  projectId: "bbq-butuh-bantuan-ku",
+  storageBucket: "bbq-butuh-bantuan-ku.firebasestorage.app",
+  messagingSenderId: "1018956872787",
+  appId: "1:1018956872787:web:6056f533ae86654dc11aa6",
+  measurementId: "G-FHDPFLXFCF"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+window.db = db;
+window.dbRef = ref;
+window.dbSet = set;
+window.dbGet = get;
+window.dbPush = push;
+window.dbUpdate = update;
+window.dbRemove = remove;
+window.dbOnValue = onValue;
+window.dbServerTimestamp = serverTimestamp;
+window.firebaseReady = true;
+window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script>
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let state = {
+  page: 'home',
+  adminLoggedIn: false,
+  adminSubPage: null,
+  listStep: 'category',
+  listSelectedCategory: null,
+  listSelectedType: null,
+  listSelectedPackage: null,
+  listMemberInfo: null,
+  listQty: 1,
+  posCart: [],
+  posTab: 'cart',
+  posBarang: [],
+  posMemberInfo: null,
+  billings: {},
+  categories: {},
+  inventory: {},
+  members: {},
+  vouchers: {},
+  expenses: [],
+  transactions: [],
+  activeBillings: {},
+  timers: {},
+  savedBillings: {},
+  settings: { pin: '1234' }
+};
+
+// ============================================================
+// UTILS
+// ============================================================
+function toast(msg, type='success') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function formatRp(n) { return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
+function formatDate(ts) { return ts ? new Date(ts).toLocaleDateString('id-ID') : '-'; }
+function formatDateTime(ts) { return ts ? new Date(ts).toLocaleString('id-ID') : '-'; }
+function genCode() { return Math.random().toString(36).substr(2,8).toUpperCase(); }
+function genPLU(barcode) { return (barcode||'').slice(-4) || Math.floor(1000+Math.random()*9000).toString(); }
+
+function padTime(n) { return String(n).padStart(2,'0'); }
+function secToStr(sec) {
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+  return `${padTime(h)}:${padTime(m)}:${padTime(s)}`;
+}
+
+function showModal(html) {
+  document.getElementById('modal-container').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">${html}</div>`;
+}
+function closeModal() { document.getElementById('modal-container').innerHTML = ''; }
+
+// ============================================================
+// FIREBASE HELPERS
+// ============================================================
+async function dbRead(path) {
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, path));
+    return snap.exists() ? snap.val() : null;
+  } catch(e) { return null; }
+}
+
+async function dbWrite(path, data) {
+  try { await window.dbSet(window.dbRef(window.db, path), data); return true; }
+  catch(e) { console.error(e); return false; }
+}
+
+async function dbPushData(path, data) {
+  try { const r = await window.dbPush(window.dbRef(window.db, path), data); return r.key; }
+  catch(e) { console.error(e); return null; }
+}
+
+async function dbDel(path) {
+  try { await window.dbRemove(window.dbRef(window.db, path)); return true; }
+  catch(e) { return false; }
+}
+
+function dbListen(path, cb) {
+  window.dbOnValue(window.dbRef(window.db, path), snap => cb(snap.exists() ? snap.val() : {}));
+}
+
+// ============================================================
+// INIT LISTENERS
+// ============================================================
+function initListeners() {
+  dbListen('billings', v => { state.billings = v||{}; if(state.page==='home') renderHome(); });
+  dbListen('categories', v => { state.categories = v||{}; });
+  dbListen('members', v => { state.members = v||{}; });
+  dbListen('vouchers', v => { state.vouchers = v||{}; });
+  dbListen('inventory', v => { state.inventory = v||{}; state.posBarang = Object.entries(v||{}).map(([id,d])=>({id,...d})); });
+  dbListen('transactions', v => { state.transactions = v||{}; });
+  dbListen('expenses', v => { state.expenses = v||{}; });
+  dbListen('savedBillings', v => { state.savedBillings = v||{}; if(state.page==='home') renderHome(); });
+  dbListen('settings', v => { if(v) state.settings = {...state.settings, ...v}; });
+  dbListen('activeBillings', v => {
+    state.activeBillings = v||{};
+    // Sync timers
+    Object.entries(state.activeBillings).forEach(([id, b]) => {
+      if(b.status==='running' && !state.timers[id]) {
+        startTimer(id);
+      }
+    });
+    if(state.page==='home') renderHome();
+  });
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(page) {
+  state.page = page;
+  state.adminSubPage = null;
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-'+page)?.classList.add('active');
+  render();
+}
+window.navigate = navigate;
+
+function render() {
+  const mc = document.getElementById('main-content');
+  if(state.page==='home') renderHome();
+  else if(state.page==='list') renderList();
+  else if(state.page==='pos') renderPOS();
+  else if(state.page==='admin') renderAdmin();
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock() {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('id-ID');
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// HOME PAGE
+// ============================================================
+function renderHome() {
+  const mc = document.getElementById('main-content');
+  const actives = Object.entries(state.activeBillings||{}).filter(([,b])=>b.status!=='done');
+  const saved = Object.entries(state.savedBillings||{});
+
+  mc.innerHTML = `
+    <!-- ACTIVE BILLINGS -->
+    <div class="card">
+      <div class="card-title">⏱ Billing Aktif</div>
+      ${actives.length===0 ? '<div style="color:var(--text3);font-size:13px;text-align:center;padding:10px">Belum ada billing aktif</div>' :
+        actives.map(([id, b]) => activeBillingCard(id, b)).join('')
+      }
+    </div>
+
+    <!-- CEK MEMBER -->
+    <div class="card">
+      <div class="card-title">🎖 Cek Status Member</div>
+      <div class="row">
+        <input id="hm-member-input" placeholder="No HP Member" type="tel">
+        <button class="btn btn-primary" onclick="homeCekMember()" style="white-space:nowrap">Cek</button>
+      </div>
+      <div id="hm-member-result"></div>
+    </div>
+
+    <!-- REDEEM VOUCHER -->
+    <div class="card">
+      <div class="card-title">🎁 Tukar Voucher</div>
+      <div class="form-group">
+        <label>No Member</label>
+        <input id="rdm-member" placeholder="No HP Member" type="tel">
+      </div>
+      <div class="form-group">
+        <label>Kode Voucher</label>
+        <input id="rdm-code" placeholder="Kode Voucher" style="text-transform:uppercase">
+      </div>
+      <button class="btn btn-primary btn-full" onclick="homePreviewRedeem()">Preview Hadiah</button>
+    </div>
+
+    <!-- SIMPAN/AMBIL BILLING -->
+    <div class="card">
+      <div class="card-title">💾 Simpan & Ambil Billing</div>
+      <div class="form-group">
+        <label>Nama</label>
+        <input id="sv-name" placeholder="Nama Customer">
+      </div>
+      <div class="row">
+        <div class="form-group">
+          <label>No Member (opt)</label>
+          <input id="sv-member" placeholder="No HP" type="tel">
+        </div>
+        <div class="form-group">
+          <label>Jumlah (menit)</label>
+          <input id="sv-dur" placeholder="60" type="number" min="1">
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-full" onclick="homeSaveBilling()" style="margin-bottom:10px">💾 Simpan</button>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Billing Tersimpan:</div>
+      ${saved.length===0 ? '<div style="color:var(--text3);font-size:12px">Kosong</div>' :
+        saved.map(([id, b]) => `
+          <div class="billing-card">
+            <div class="billing-card-header">
+              <div>
+                <div class="billing-card-name">${b.name}</div>
+                <div class="billing-card-meta">${b.member||'Non-member'} · ${b.duration} mnt · ${formatDateTime(b.createdAt)}</div>
+              </div>
+            </div>
+            <div class="billing-card-actions">
+              <button class="btn btn-primary btn-sm" onclick="homeLoadBilling('${id}')">Ambil</button>
+              <button class="btn btn-danger btn-sm" onclick="homeDeleteSaved('${id}')">Hapus</button>
+            </div>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+
+function activeBillingCard(id, b) {
+  const remaining = b.remaining||0;
+  const total = b.totalSec||1;
+  const pct = Math.max(0, Math.min(100, (remaining/total)*100));
+  const isRunning = b.status==='running';
+  return `
+    <div class="billing-card">
+      <div class="billing-card-header">
+        <div>
+          <div class="billing-card-name">${b.customerName||'Customer'}</div>
+          <div class="billing-card-meta">${b.categoryName||''} · ${b.packageName||''} · ${b.member||'Non-member'}</div>
+        </div>
+        <span class="badge ${isRunning?'badge-green':'badge-yellow'}">${isRunning?'Jalan':'Pause'}</span>
+      </div>
+      <div id="timer-${id}" class="timer-display">${secToStr(remaining)}</div>
+      <div style="background:var(--border);border-radius:4px;height:4px;margin:8px 0">
+        <div style="background:var(--accent);height:4px;border-radius:4px;width:${pct}%;transition:width 1s"></div>
+      </div>
+      <div class="billing-card-actions">
+        ${isRunning
+          ? `<button class="btn btn-secondary btn-sm" onclick="pauseBilling('${id}')">⏸ Pause</button>`
+          : `<button class="btn btn-success btn-sm" onclick="resumeBilling('${id}')">▶ Lanjut</button>`
+        }
+        <button class="btn btn-danger btn-sm" onclick="stopBilling('${id}')">⏹ Selesai</button>
+      </div>
+    </div>
+  `;
+}
+
+async function homeCekMember() {
+  const no = document.getElementById('hm-member-input').value.trim();
+  if(!no) return toast('Masukan no HP member','error');
+  const m = state.members[no];
+  const res = document.getElementById('hm-member-result');
+  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; return; }
+  const vouchers = Object.entries(state.vouchers||{}).filter(([,v])=>v.member===no && !v.redeemed);
+  res.innerHTML = `
+    <div class="member-info-box" style="margin-top:10px">
+      <div class="member-name">${m.name}</div>
+      <div class="member-stats">
+        <div class="member-stat"><div class="val">${m.points||0}</div><div class="lbl">Poin</div></div>
+        <div class="member-stat"><div class="val">${vouchers.length}</div><div class="lbl">Voucher</div></div>
+      </div>
+      ${vouchers.length>0?`<div style="margin-top:10px">${vouchers.map(([id,v])=>`<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)"><span class="badge badge-accent">${v.code}</span> ${v.description||'Voucher Gratis'}</div>`).join('')}</div>`:''}
+    </div>
+  `;
+}
+
+async function homePreviewRedeem() {
+  const no = document.getElementById('rdm-member').value.trim();
+  const code = document.getElementById('rdm-code').value.trim().toUpperCase();
+  if(!no||!code) return toast('Isi semua field','error');
+  const m = state.members[no];
+  if(!m) return toast('Member tidak ditemukan','error');
+  const vEntry = Object.entries(state.vouchers||{}).find(([,v])=>v.code===code && v.member===no && !v.redeemed);
+  if(!vEntry) return toast('Voucher tidak valid atau sudah digunakan','error');
+  const [vid, v] = vEntry;
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><div class="modal-title">🎁 Konfirmasi Redeem</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-body" style="text-align:center">
+        <div style="font-size:48px;margin-bottom:12px">🎉</div>
+        <div style="font-size:18px;font-weight:700;margin-bottom:6px">${m.name}</div>
+        <div style="color:var(--text2);margin-bottom:12px">Voucher: <strong>${code}</strong></div>
+        <div class="badge badge-green" style="font-size:14px;padding:6px 16px">${v.description||'Voucher Gratis 1 Jam'}</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+        <button class="btn btn-primary" onclick="doRedeem('${vid}','${no}')">Redeem!</button>
+      </div>
+    </div>
+  `);
+}
+
+async function doRedeem(vid, memberNo) {
+  await dbWrite(`vouchers/${vid}/redeemed`, true);
+  await dbWrite(`vouchers/${vid}/redeemedAt`, Date.now());
+  closeModal();
+  toast('Voucher berhasil diredeem!');
+}
+window.doRedeem = doRedeem;
+window.homePreviewRedeem = homePreviewRedeem;
+window.homeCekMember = homeCekMember;
+
+async function homeSaveBilling() {
+  const name = document.getElementById('sv-name').value.trim();
+  const member = document.getElementById('sv-member').value.trim();
+  const dur = parseInt(document.getElementById('sv-dur').value)||0;
+  if(!name||!dur) return toast('Isi nama dan durasi','error');
+  await dbPushData('savedBillings', { name, member, duration: dur, createdAt: Date.now() });
+  document.getElementById('sv-name').value='';
+  document.getElementById('sv-member').value='';
+  document.getElementById('sv-dur').value='';
+  toast('Billing tersimpan!');
+}
+window.homeSaveBilling = homeSaveBilling;
+
+async function homeLoadBilling(id) {
+  const b = state.savedBillings[id];
+  if(!b) return;
+  document.getElementById('sv-name').value = b.name;
+  document.getElementById('sv-member').value = b.member||'';
+  document.getElementById('sv-dur').value = b.duration||'';
+  await dbDel(`savedBillings/${id}`);
+  toast('Billing diambil');
+}
+window.homeLoadBilling = homeLoadBilling;
+
+async function homeDeleteSaved(id) {
+  await dbDel(`savedBillings/${id}`);
+  toast('Dihapus');
+}
+window.homeDeleteSaved = homeDeleteSaved;
+
+// TIMER LOGIC
+function startTimer(id) {
+  if(state.timers[id]) return;
+  state.timers[id] = setInterval(async () => {
+    const b = state.activeBillings[id];
+    if(!b || b.status!=='running') { clearInterval(state.timers[id]); delete state.timers[id]; return; }
+    const rem = (b.remaining||0) - 1;
+    if(rem <= 0) {
+      clearInterval(state.timers[id]); delete state.timers[id];
+      await dbWrite(`activeBillings/${id}/remaining`, 0);
+      await dbWrite(`activeBillings/${id}/status`, 'done');
+      // Add points for hours played
+      if(b.member) {
+        const hrs = Math.floor((b.totalSec||0)/3600);
+        if(hrs>0) await addPoints(b.member, hrs*2);
+      }
+      toast(`⏰ Waktu habis: ${b.customerName}`);
+    } else {
+      await dbWrite(`activeBillings/${id}/remaining`, rem);
+      state.activeBillings[id] = {...b, remaining: rem};
+      const el = document.getElementById(`timer-${id}`);
+      if(el) el.textContent = secToStr(rem);
+    }
+  }, 1000);
+}
+
+async function pauseBilling(id) {
+  await dbWrite(`activeBillings/${id}/status`, 'paused');
+  clearInterval(state.timers[id]); delete state.timers[id];
+  toast('Billing di-pause');
+}
+window.pauseBilling = pauseBilling;
+
+async function resumeBilling(id) {
+  await dbWrite(`activeBillings/${id}/status`, 'running');
+  startTimer(id);
+  toast('Billing dilanjutkan');
+}
+window.resumeBilling = resumeBilling;
+
+async function stopBilling(id) {
+  clearInterval(state.timers[id]); delete state.timers[id];
+  await dbWrite(`activeBillings/${id}/status`, 'done');
+  toast('Billing selesai');
+}
+window.stopBilling = stopBilling;
+
+// ============================================================
+// LIST PAGE
+// ============================================================
+function renderList() {
+  const mc = document.getElementById('main-content');
+  if(state.listStep==='category') renderListCategory();
+  else if(state.listStep==='type') renderListType();
+  else if(state.listStep==='package') renderListPackage();
+  else if(state.listStep==='member') renderListMember();
+  else if(state.listStep==='payment') renderListPayment();
+}
+
+function renderListCategory() {
+  const mc = document.getElementById('main-content');
+  const cats = Object.entries(state.categories||{});
+  mc.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+      <h2 style="font-family:'Syne',sans-serif;font-size:18px">Pilih Kategori</h2>
+    </div>
+    ${cats.length===0 ? '<div class="card" style="text-align:center;color:var(--text3)">Belum ada kategori. Tambah di Admin > Billing</div>' :
+      `<div class="cat-grid">${cats.map(([id,c])=>`
+        <div class="cat-card" onclick="selectCategory('${id}')">
+          <div class="cat-icon">${c.icon||'🎮'}</div>
+          <div class="cat-name">${c.name}</div>
+        </div>
+      `).join('')}</div>`
+    }
+  `;
+}
+
+function selectCategory(id) {
+  state.listSelectedCategory = id;
+  state.listStep = 'type';
+  renderList();
+}
+window.selectCategory = selectCategory;
+
+function renderListType() {
+  const cat = state.categories[state.listSelectedCategory];
+  if(!cat) { state.listStep='category'; return renderList(); }
+  const types = Object.entries(cat.types||{});
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
+      <button class="btn btn-secondary btn-sm" onclick="state.listStep='category';renderList()">← Kembali</button>
+      <h2 style="font-family:'Syne',sans-serif;font-size:16px">${cat.name}</h2>
+    </div>
+    <div class="card">
+      <div class="card-title">Pilih Jenis</div>
+      ${types.length===0 ? '<div style="color:var(--text3);font-size:13px">Belum ada jenis</div>' :
+        types.map(([tid,t])=>`
+          <div class="list-item" onclick="selectType('${tid}')" style="cursor:pointer">
+            <div class="list-item-info">
+              <div class="list-item-name">${t.name}</div>
+              <div class="list-item-sub">${Object.keys(t.packages||{}).length} paket tersedia</div>
+            </div>
+            <span style="color:var(--accent)">›</span>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+window.renderList = renderList;
+
+function selectType(tid) {
+  state.listSelectedType = tid;
+  state.listStep = 'package';
+  renderList();
+}
+window.selectType = selectType;
+
+function renderListPackage() {
+  const cat = state.categories[state.listSelectedCategory];
+  const type = cat?.types?.[state.listSelectedType];
+  if(!type) { state.listStep='type'; return renderList(); }
+  const pkgs = Object.entries(type.packages||{});
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
+      <button class="btn btn-secondary btn-sm" onclick="state.listStep='type';renderList()">← Kembali</button>
+      <h2 style="font-family:'Syne',sans-serif;font-size:16px">${type.name}</h2>
+    </div>
+    <div class="card">
+      <div class="card-title">Pilih Paket</div>
+      ${pkgs.map(([pid,p])=>`
+        <div class="pkg-card ${state.listSelectedPackage===pid?'selected':''}" onclick="selectPackage('${pid}')">
+          <div>
+            <div style="font-weight:600">${p.name}</div>
+            <div style="font-size:12px;color:var(--text2)">${p.duration} · ${formatRp(p.price)}</div>
+          </div>
+          ${state.listSelectedPackage===pid?'<span class="badge badge-accent">✓</span>':''}
+        </div>
+      `).join('')}
+    </div>
+    ${state.listSelectedPackage ? `
+      <div class="card">
+        <div class="card-title">Qty Paket</div>
+        <div class="qty-ctrl" style="justify-content:center;margin-bottom:10px">
+          <button class="qty-btn" onclick="state.listQty=Math.max(1,state.listQty-1);renderList()">−</button>
+          <span style="font-size:20px;font-weight:700;min-width:40px;text-align:center">${state.listQty}</span>
+          <button class="qty-btn" onclick="state.listQty++;renderList()">+</button>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="state.listStep='member';renderList()">Lanjut →</button>
+      </div>
+    ` : ''}
+  `;
+}
+
+function selectPackage(pid) {
+  state.listSelectedPackage = pid;
+  state.listQty = 1;
+  renderList();
+}
+window.selectPackage = selectPackage;
+
+function renderListMember() {
+  const cat = state.categories[state.listSelectedCategory];
+  const type = cat?.types?.[state.listSelectedType];
+  const pkg = type?.packages?.[state.listSelectedPackage];
+  const total = (pkg?.price||0) * state.listQty;
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
+      <button class="btn btn-secondary btn-sm" onclick="state.listStep='package';renderList()">← Kembali</button>
+      <h2 style="font-family:'Syne',sans-serif;font-size:16px">Data Member</h2>
+    </div>
+    <div class="card">
+      <div class="card-title">Ringkasan</div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${cat?.name}</div><div class="list-item-sub">Kategori</div></div></div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${type?.name}</div><div class="list-item-sub">Jenis</div></div></div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${pkg?.name} × ${state.listQty}</div><div class="list-item-sub">Paket</div></div><div style="font-weight:700;color:var(--accent)">${formatRp(total)}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Member (Opsional)</div>
+      <div class="row">
+        <input id="list-member-no" placeholder="No HP Member" type="tel">
+        <button class="btn btn-secondary" onclick="listCekMember()" style="white-space:nowrap">Cek</button>
+      </div>
+      <div id="list-member-result"></div>
+    </div>
+    <div class="card" style="display:flex;gap:10px">
+      <button class="btn btn-success btn-full" onclick="showListPayment('cash')">💵 Tunai</button>
+      <button class="btn btn-blue btn-full" onclick="showListPayment('noncash')">💳 Non Tunai</button>
+    </div>
+  `;
+}
+
+async function listCekMember() {
+  const no = document.getElementById('list-member-no').value.trim();
+  if(!no) return;
+  const m = state.members[no];
+  const res = document.getElementById('list-member-result');
+  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; state.listMemberInfo=null; return; }
+  state.listMemberInfo = {no, ...m};
+  const vouchers = Object.entries(state.vouchers||{}).filter(([,v])=>v.member===no && !v.redeemed);
+  res.innerHTML = `
+    <div class="member-info-box">
+      <div class="member-name">${m.name}</div>
+      <div class="member-stats">
+        <div class="member-stat"><div class="val">${m.points||0}</div><div class="lbl">Poin</div></div>
+        <div class="member-stat"><div class="val">${vouchers.length}</div><div class="lbl">Voucher</div></div>
+      </div>
+    </div>
+  `;
+}
+window.listCekMember = listCekMember;
+
+function showListPayment(method) {
+  const cat = state.categories[state.listSelectedCategory];
+  const type = cat?.types?.[state.listSelectedType];
+  const pkg = type?.packages?.[state.listSelectedPackage];
+  const total = (pkg?.price||0) * state.listQty;
+  const memberNo = document.getElementById('list-member-no')?.value?.trim()||'';
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><div class="modal-title">${method==='cash'?'💵 Bayar Tunai':'💳 Non Tunai'}</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:28px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</div>
+          <div style="font-size:12px;color:var(--text2)">${pkg?.name} × ${state.listQty}</div>
+        </div>
+        ${method==='cash'?`
+          <div class="form-group">
+            <label>Uang Diterima</label>
+            <input id="pay-nominal" type="number" placeholder="0" oninput="updateKembalian(${total})">
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;padding:8px 0">
+            <span>Kembalian:</span><span id="pay-change" style="font-weight:700;color:var(--green)">Rp 0</span>
+          </div>
+        `:'<div style="text-align:center;color:var(--text2);font-size:13px;margin-bottom:10px">Transfer / QRIS</div>'}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+        <button class="btn btn-success" onclick="doListPayment('${method}',${total},'${memberNo}')">✓ Bayar & Mulai</button>
+      </div>
+    </div>
+  `);
+}
+window.showListPayment = showListPayment;
+
+function updateKembalian(total) {
+  const nom = parseInt(document.getElementById('pay-nominal')?.value)||0;
+  const el = document.getElementById('pay-change');
+  if(el) el.textContent = formatRp(Math.max(0, nom-total));
+}
+window.updateKembalian = updateKembalian;
+
+async function doListPayment(method, total, memberNo) {
+  const cat = state.categories[state.listSelectedCategory];
+  const type = cat?.types?.[state.listSelectedType];
+  const pkg = type?.packages?.[state.listSelectedPackage];
+  // Duration in seconds
+  const durationStr = pkg?.duration||'1 jam';
+  let totalSec = parseDuration(durationStr) * state.listQty;
+  const customerName = state.listMemberInfo?.name || 'Guest';
+  const member = memberNo||'';
+
+  // Save transaction
+  await dbPushData('transactions', {
+    type: 'billing',
+    categoryId: state.listSelectedCategory,
+    categoryName: cat?.name,
+    typeId: state.listSelectedType,
+    typeName: type?.name,
+    packageId: state.listSelectedPackage,
+    packageName: pkg?.name,
+    qty: state.listQty,
+    total,
+    paymentMethod: method,
+    member,
+    customerName,
+    createdAt: Date.now()
+  });
+
+  // Create active billing
+  const bKey = await dbPushData('activeBillings', {
+    customerName,
+    categoryName: cat?.name,
+    packageName: pkg?.name,
+    member,
+    totalSec,
+    remaining: totalSec,
+    status: 'running',
+    startedAt: Date.now()
+  });
+
+  // Member points: 10 poin login pertama hari ini
+  if(member && state.members[member]) {
+    const today = new Date().toDateString();
+    const m = state.members[member];
+    if(m.lastLogin !== today) {
+      await addPoints(member, 10);
+      await dbWrite(`members/${member}/lastLogin`, today);
+    }
+    // Check voucher milestone
+    await checkVoucherMilestone(member);
+  }
+
+  closeModal();
+  // Reset list state
+  state.listStep='category'; state.listSelectedCategory=null; state.listSelectedType=null;
+  state.listSelectedPackage=null; state.listQty=1; state.listMemberInfo=null;
+  navigate('home');
+  toast('Billing dimulai! ⏱');
+}
+window.doListPayment = doListPayment;
+
+function parseDuration(str) {
+  // e.g. "1 jam", "30 menit", "2 jam"
+  const h = str.match(/(\d+)\s*jam/i);
+  const m = str.match(/(\d+)\s*menit/i);
+  return ((h?parseInt(h[1]):0)*3600) + ((m?parseInt(m[1]):0)*60) || 3600;
+}
+
+// ============================================================
+// POS PAGE
+// ============================================================
+function renderPOS() {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div class="tabs">
+      <button class="tab ${state.posTab==='cart'?'active':''}" onclick="state.posTab='cart';renderPOS()">🛒 Keranjang (${state.posCart.length})</button>
+      <button class="tab ${state.posTab==='items'?'active':''}" onclick="state.posTab='items';renderPOS()">📦 Barang</button>
+    </div>
+    ${state.posTab==='cart' ? renderPOSCart() : renderPOSItems()}
+  `;
+}
+
+function renderPOSItems() {
+  const items = Object.entries(state.inventory||{});
+  return `
+    <div style="margin-bottom:10px">
+      <input id="pos-search" placeholder="Cari nama / barcode / PLU..." oninput="renderPOS()" value="${window._posSearch||''}">
+    </div>
+    <div>
+      ${items.filter(([,i])=>{
+        const q = (document.getElementById('pos-search')?.value||window._posSearch||'').toLowerCase();
+        return !q || i.name?.toLowerCase().includes(q) || (i.barcode||'').includes(q) || (i.plu||'').includes(q);
+      }).map(([id,item])=>`
+        <div class="list-item">
+          <div class="list-item-info">
+            <div class="list-item-name">${item.name}</div>
+            <div class="list-item-sub">PLU: ${item.plu||'-'} · ${formatRp(item.sellingPrice)}</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="posAddToCart('${id}')">+ Tambah</button>
+        </div>
+      `).join('') || '<div style="color:var(--text3);text-align:center;padding:20px">Tidak ada barang</div>'}
+    </div>
+  `;
+}
+
+function posAddToCart(id) {
+  const item = state.inventory[id];
+  if(!item) return;
+  const existing = state.posCart.find(c=>c.id===id);
+  if(existing) existing.qty++;
+  else state.posCart.push({id, name:item.name, price:item.sellingPrice, qty:1});
+  renderPOS();
+  toast(`${item.name} ditambahkan`);
+}
+window.posAddToCart = posAddToCart;
+
+function renderPOSCart() {
+  const total = state.posCart.reduce((s,i)=>s+(i.price*i.qty),0);
+  return `
+    ${state.posCart.length===0 ? '<div style="text-align:center;padding:40px;color:var(--text3)">Keranjang kosong<br><br><button class="btn btn-secondary btn-sm" onclick="state.posTab=\'items\';renderPOS()">Tambah Barang</button></div>' : `
+      <div class="card">
+        ${state.posCart.map((item,idx)=>`
+          <div class="cart-item">
+            <div class="cart-item-info">
+              <div style="font-size:14px;font-weight:500">${item.name}</div>
+              <div style="font-size:12px;color:var(--text2)">${formatRp(item.price)} × ${item.qty} = ${formatRp(item.price*item.qty)}</div>
+            </div>
+            <div class="qty-ctrl">
+              <button class="qty-btn" onclick="posQty(${idx},-1)">−</button>
+              <span style="min-width:24px;text-align:center">${item.qty}</span>
+              <button class="qty-btn" onclick="posQty(${idx},1)">+</button>
+              <button class="btn-icon" onclick="posRemove(${idx})">🗑</button>
+            </div>
+          </div>
+        `).join('')}
+        <div style="padding-top:10px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-family:'Syne',sans-serif;font-weight:700">Total</span>
+          <span style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Member (Opsional)</div>
+        <div class="row">
+          <input id="pos-member-no" placeholder="No HP Member" type="tel">
+          <button class="btn btn-secondary" onclick="posCekMember()" style="white-space:nowrap">Cek</button>
+        </div>
+        <div id="pos-member-result"></div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-success btn-full" onclick="showPOSPayment('cash',${total})">💵 Tunai</button>
+        <button class="btn btn-blue btn-full" onclick="showPOSPayment('noncash',${total})">💳 Non Tunai</button>
+      </div>
+    `}
+  `;
+}
+
+function posQty(idx, delta) {
+  state.posCart[idx].qty += delta;
+  if(state.posCart[idx].qty<=0) state.posCart.splice(idx,1);
+  renderPOS();
+}
+window.posQty = posQty;
+
+function posRemove(idx) { state.posCart.splice(idx,1); renderPOS(); }
+window.posRemove = posRemove;
+
+async function posCekMember() {
+  const no = document.getElementById('pos-member-no').value.trim();
+  if(!no) return;
+  const m = state.members[no];
+  const res = document.getElementById('pos-member-result');
+  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; state.posMemberInfo=null; return; }
+  state.posMemberInfo = {no,...m};
+  res.innerHTML = `<div class="member-info-box"><div class="member-name">${m.name}</div><div style="font-size:12px;color:var(--text2)">Poin: ${m.points||0}</div></div>`;
+}
+window.posCekMember = posCekMember;
+
+function showPOSPayment(method, total) {
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><div class="modal-title">${method==='cash'?'💵 Bayar Tunai':'💳 Non Tunai'}</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-body">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:28px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</div>
+        </div>
+        ${method==='cash'?`
+          <div class="form-group">
+            <label>Uang Diterima</label>
+            <input id="pos-pay-nominal" type="number" placeholder="0" oninput="updatePOSChange(${total})">
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;padding:8px 0">
+            <span>Kembalian:</span><span id="pos-pay-change" style="font-weight:700;color:var(--green)">Rp 0</span>
+          </div>
+        `:'<div style="text-align:center;color:var(--text2);font-size:13px;margin-bottom:10px">Transfer / QRIS</div>'}
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
+        <button class="btn btn-success" onclick="doPOSPayment('${method}',${total})">✓ Selesai</button>
+      </div>
+    </div>
+  `);
+}
+window.showPOSPayment = showPOSPayment;
+
+function updatePOSChange(total) {
+  const nom = parseInt(document.getElementById('pos-pay-nominal')?.value)||0;
+  const el = document.getElementById('pos-pay-change');
+  if(el) el.textContent = formatRp(Math.max(0, nom-total));
+}
+window.updatePOSChange = updatePOSChange;
+
+async function doPOSPayment(method, total) {
+  const memberNo = state.posMemberInfo?.no||'';
+  await dbPushData('transactions', {
+    type: 'pos',
+    items: state.posCart,
+    total,
+    paymentMethod: method,
+    member: memberNo,
+    createdAt: Date.now()
+  });
+  // Points: 1 per 1000
+  if(memberNo && state.members[memberNo]) {
+    const pts = Math.floor(total/1000);
+    if(pts>0) await addPoints(memberNo, pts);
+    await checkVoucherMilestone(memberNo);
+  }
+  state.posCart = []; state.posMemberInfo = null;
+  closeModal();
+  renderPOS();
+  toast('Transaksi berhasil!');
+}
+window.doPOSPayment = doPOSPayment;
+
+// ============================================================
+// ADMIN PAGE
+// ============================================================
+function renderAdmin() {
+  const mc = document.getElementById('main-content');
+  if(!state.adminLoggedIn) { renderAdminLogin(); return; }
+  if(state.adminSubPage) { renderAdminSub(); return; }
+  mc.innerHTML = `
+    <h2 style="font-family:'Syne',sans-serif;margin-bottom:16px">Menu Admin</h2>
+    <div class="admin-menu-grid">
+      ${[
+        {key:'dashboard',icon:'📊',name:'Dashboard'},
+        {key:'achievement',icon:'🏆',name:'Achievement'},
+        {key:'member',icon:'👥',name:'Member'},
+        {key:'billing-admin',icon:'⏱',name:'Billing'},
+        {key:'inventory',icon:'📦',name:'Inventory'},
+        {key:'expenses',icon:'💸',name:'Pengeluaran'},
+        {key:'setup',icon:'⚙️',name:'Setup'},
+      ].map(m=>`
+        <div class="admin-menu-item" onclick="goAdminSub('${m.key}')">
+          <div class="icon">${m.icon}</div>
+          <div class="name">${m.name}</div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="state.adminLoggedIn=false;renderAdmin()">Logout</button>
+  `;
+}
+
+function renderAdminLogin() {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    <div style="max-width:320px;margin:60px auto">
+      <div style="text-align:center;margin-bottom:24px">
+        <div style="font-size:48px">🔐</div>
+        <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-top:8px">Admin Panel</h2>
+      </div>
+      <div class="card">
+        <div class="form-group">
+          <label>PIN</label>
+          <input type="password" id="admin-pin" placeholder="Masukan PIN" maxlength="8" style="text-align:center;font-size:24px;letter-spacing:8px">
+        </div>
+        <button class="btn btn-primary btn-full" onclick="doAdminLogin()">Masuk</button>
+      </div>
+    </div>
+  `;
+}
+
+function doAdminLogin() {
+  const pin = document.getElementById('admin-pin').value;
+  if(pin === (state.settings.pin||'1234')) {
+    state.adminLoggedIn = true;
+    renderAdmin();
+  } else {
+    toast('PIN salah','error');
+  }
+}
+window.doAdminLogin = doAdminLogin;
+
+function goAdminSub(key) { state.adminSubPage = key; renderAdminSub(); }
+window.goAdminSub = goAdminSub;
+
+function backToAdmin() { state.adminSubPage=null; renderAdmin(); }
+window.backToAdmin = backToAdmin;
+
+function renderAdminSub() {
+  const sub = state.adminSubPage;
+  if(sub==='dashboard') renderDashboard();
+  else if(sub==='achievement') renderAchievement();
+  else if(sub==='member') renderMemberAdmin();
+  else if(sub==='billing-admin') renderBillingAdmin();
+  else if(sub==='inventory') renderInventoryAdmin();
+  else if(sub==='expenses') renderExpenses();
+  else if(sub==='setup') renderSetup();
+}
+
+function adminHeader(title) {
+  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <button class="btn btn-secondary btn-sm" onclick="backToAdmin()">← Back</button>
+    <h2 style="font-family:'Syne',sans-serif;font-size:16px">${title}</h2>
+  </div>`;
+}
+
+// DASHBOARD
+function renderDashboard() {
+  const mc = document.getElementById('main-content');
+  const txns = Object.values(state.transactions||{});
+  const exps = Object.values(state.expenses||{});
+  const [dateFrom, dateTo] = getFilterDates();
+
+  const filtered = txns.filter(t=>filterByDate(t.createdAt, dateFrom, dateTo));
+  const billingTxns = filtered.filter(t=>t.type==='billing');
+  const posTxns = filtered.filter(t=>t.type==='pos');
+  const totalBilling = billingTxns.reduce((s,t)=>s+t.total,0);
+  const totalPOS = posTxns.reduce((s,t)=>s+t.total,0);
+  const totalRevenue = totalBilling + totalPOS;
+  const totalExp = exps.filter(e=>filterByDate(e.createdAt,dateFrom,dateTo)).reduce((s,e)=>s+e.amount,0);
+  const cashBilling = billingTxns.filter(t=>t.paymentMethod==='cash').reduce((s,t)=>s+t.total,0);
+  const noncashBilling = billingTxns.filter(t=>t.paymentMethod==='noncash').reduce((s,t)=>s+t.total,0);
+  const cashPOS = posTxns.filter(t=>t.paymentMethod==='cash').reduce((s,t)=>s+t.total,0);
+  const noncashPOS = posTxns.filter(t=>t.paymentMethod==='noncash').reduce((s,t)=>s+t.total,0);
+
+  // Category breakdown
+  const catBreakdown = {};
+  billingTxns.forEach(t=>{
+    if(!catBreakdown[t.categoryName]) catBreakdown[t.categoryName]={total:0,cash:0,noncash:0,hours:0};
+    catBreakdown[t.categoryName].total += t.total;
+    catBreakdown[t.categoryName][t.paymentMethod==='cash'?'cash':'noncash'] += t.total;
+    const pkg = state.categories[t.categoryId]?.types?.[t.typeId]?.packages?.[t.packageId];
+    if(pkg) catBreakdown[t.categoryName].hours += parseDuration(pkg.duration||'1 jam')*(t.qty||1)/3600;
+  });
+
+  mc.innerHTML = `
+    ${adminHeader('📊 Dashboard')}
+    <div class="card">
+      <div class="card-title">Filter Tanggal</div>
+      <div class="row">
+        <div class="form-group"><label>Dari</label><input type="date" id="dash-from" value="${dateFrom}"></div>
+        <div class="form-group"><label>Sampai</label><input type="date" id="dash-to" value="${dateTo}"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="renderDashboard()">Tampilkan</button>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="val">${formatRp(totalRevenue)}</div><div class="lbl">Total Pendapatan</div></div>
+      <div class="stat-box"><div class="val">${formatRp(totalExp)}</div><div class="lbl">Total Pengeluaran</div></div>
+      <div class="stat-box"><div class="val">${formatRp(totalRevenue-totalExp)}</div><div class="lbl">Saldo Bersih</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pendapatan Billing per Kategori</div>
+      ${Object.entries(catBreakdown).length===0?'<div style="color:var(--text3);font-size:13px">Belum ada data</div>':
+        Object.entries(catBreakdown).map(([cat,d])=>`
+          <div class="list-item">
+            <div class="list-item-info">
+              <div class="list-item-name">${cat}</div>
+              <div class="list-item-sub">Tunai: ${formatRp(d.cash)} · Non-tunai: ${formatRp(d.noncash)} · ${d.hours.toFixed(1)} jam</div>
+            </div>
+            <div style="font-weight:700;color:var(--accent)">${formatRp(d.total)}</div>
+          </div>
+        `).join('')
+      }
+    </div>
+    <div class="card">
+      <div class="card-title">Pendapatan POS</div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name">Tunai</div></div><div style="color:var(--green)">${formatRp(cashPOS)}</div></div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name">Non Tunai</div></div><div style="color:var(--blue)">${formatRp(noncashPOS)}</div></div>
+      <div class="list-item"><div class="list-item-info"><div class="list-item-name"><strong>Keuntungan Bersih POS</strong></div></div><div style="color:var(--accent);font-weight:700">${formatRp(totalPOS - calcCOGS(posTxns))}</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Rincian Transaksi</div>
+      ${filtered.slice().reverse().slice(0,20).map(t=>`
+        <div class="list-item">
+          <div class="list-item-info">
+            <div class="list-item-name">${t.type==='billing'?(t.categoryName+' · '+t.packageName):(t.items?.map(i=>i.name).join(', '))}</div>
+            <div class="list-item-sub">${formatDateTime(t.createdAt)} · ${t.member||'Non-member'} · <span class="badge ${t.paymentMethod==='cash'?'badge-green':'badge-blue'}">${t.paymentMethod}</span></div>
+          </div>
+          <div style="font-weight:600">${formatRp(t.total)}</div>
+        </div>
+      `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada transaksi</div>'}
+    </div>
+  `;
+}
+window.renderDashboard = renderDashboard;
+
+function calcCOGS(txns) {
+  return txns.reduce((s,t)=>{
+    return s + (t.items||[]).reduce((ss,item)=>{
+      const inv = state.inventory[item.id];
+      return ss + (inv?.buyPrice||0)*(item.qty||1);
+    },0);
+  },0);
+}
+
+function getFilterDates() {
+  const fromEl = document.getElementById('dash-from')||document.getElementById('ach-from')||document.getElementById('exp-from');
+  const toEl = document.getElementById('dash-to')||document.getElementById('ach-to')||document.getElementById('exp-to');
+  const today = new Date().toISOString().split('T')[0];
+  const monthStart = today.substr(0,7)+'-01';
+  return [fromEl?.value||monthStart, toEl?.value||today];
+}
+
+function filterByDate(ts, from, to) {
+  if(!ts) return true;
+  const d = new Date(ts).toISOString().split('T')[0];
+  return d>=from && d<=to;
+}
+
+// ACHIEVEMENT
+function renderAchievement() {
+  const mc = document.getElementById('main-content');
+  const txns = Object.values(state.transactions||{});
+  const today = new Date();
+  const month = parseInt(document.getElementById('ach-month')?.value)||today.getMonth()+1;
+  const year = parseInt(document.getElementById('ach-year')?.value)||today.getFullYear();
+
+  const filtered = txns.filter(t=>{
+    const d = new Date(t.createdAt||0);
+    return d.getMonth()+1===month && d.getFullYear()===year;
+  });
+
+  const cats = Object.entries(state.categories||{});
+  const posTxns = filtered.filter(t=>t.type==='pos');
+  const totalPOS = posTxns.reduce((s,t)=>s+t.total,0);
+
+  mc.innerHTML = `
+    ${adminHeader('🏆 Achievement')}
+    <div class="card">
+      <div class="card-title">Filter Bulan</div>
+      <div class="row">
+        <div class="form-group"><label>Bulan</label>
+          <select id="ach-month" onchange="renderAchievement()">
+            ${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i+1===month?'selected':''}>${new Date(2000,i).toLocaleString('id-ID',{month:'long'})}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group"><label>Tahun</label>
+          <input type="number" id="ach-year" value="${year}" onchange="renderAchievement()" style="text-align:center">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Pencapaian POS</div>
+      ${renderAchRow('pos', totalPOS, month, year)}
+    </div>
+    <div class="card">
+      <div class="card-title">Pencapaian per Kategori</div>
+      ${cats.map(([id,c])=>{
+        const catTotal = filtered.filter(t=>t.type==='billing'&&t.categoryId===id).reduce((s,t)=>s+t.total,0);
+        return `<div style="margin-bottom:10px">${renderAchRow(id, catTotal, month, year, c.name)}</div>`;
+      }).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada kategori</div>'}
+    </div>
+  `;
+}
+window.renderAchievement = renderAchievement;
+
+function renderAchRow(key, actual, month, year, label='') {
+  const achKey = `ach_${key}_${year}_${month}`;
+  const target = parseInt(state.settings?.[achKey]||0)||0;
+  const pct = target>0 ? Math.min(100,Math.round((actual/target)*100)) : 0;
+  return `
+    <div>
+      ${label?`<div style="font-size:13px;font-weight:600;margin-bottom:6px">${label}</div>`:''}
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+        <span>Actual: <strong>${formatRp(actual)}</strong></span>
+        <span>Target: <strong>${formatRp(target)}</strong></span>
+        <span style="color:${pct>=100?'var(--green)':pct>=70?'var(--yellow)':'var(--red)'}">${pct}%</span>
+      </div>
+      <div style="background:var(--border);border-radius:4px;height:8px;margin-bottom:6px">
+        <div style="background:${pct>=100?'var(--green)':pct>=70?'var(--yellow)':'var(--accent)'};height:8px;border-radius:4px;width:${pct}%"></div>
+      </div>
+      <div class="row">
+        <input type="number" id="target-${key}" placeholder="Edit Target" value="${target}">
+        <button class="btn btn-secondary btn-sm" onclick="saveTarget('${key}','${month}','${year}')">Simpan</button>
+      </div>
+    </div>
+  `;
+}
+
+async function saveTarget(key, month, year) {
+  const val = parseInt(document.getElementById('target-'+key)?.value)||0;
+  await dbWrite(`settings/ach_${key}_${year}_${month}`, val);
+  toast('Target disimpan');
+}
+window.saveTarget = saveTarget;
+
+// MEMBER ADMIN
+function renderMemberAdmin() {
+  const mc = document.getElementById('main-content');
+  const tab = window._memberTab||'points';
+  const members = Object.entries(state.members||{});
+  const sorted = [...members].sort(([,a],[,b])=>(b.points||0)-(a.points||0));
+  const vouchers = Object.entries(state.vouchers||{});
+
+  mc.innerHTML = `
+    ${adminHeader('👥 Member')}
+    <div class="tabs">
+      <button class="tab ${tab==='points'?'active':''}" onclick="window._memberTab='points';renderMemberAdmin()">Poin & Ranking</button>
+      <button class="tab ${tab==='vouchers'?'active':''}" onclick="window._memberTab='vouchers';renderMemberAdmin()">Voucher</button>
+    </div>
+    ${tab==='points'?`
+      <div class="card">
+        <div class="card-title">Tambah Member</div>
+        <div class="form-group"><label>Nama</label><input id="new-member-name" placeholder="Nama Member"></div>
+        <div class="form-group"><label>No HP (jadi No Member)</label><input id="new-member-no" placeholder="08xxxxxxxx" type="tel"></div>
+        <button class="btn btn-primary btn-full" onclick="addMember()">Tambah Member</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Ranking Member</div>
+        ${sorted.map(([no,m],i)=>`
+          <div class="list-item">
+            <div style="font-size:18px;font-weight:800;color:var(--text3);min-width:30px">${i+1}</div>
+            <div class="list-item-info">
+              <div class="list-item-name">${m.name}</div>
+              <div class="list-item-sub">${no}</div>
+            </div>
+            <span style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)">${m.points||0} poin</span>
+          </div>
+        `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada member</div>'}
+      </div>
+    `:''
+    }
+    ${tab==='vouchers'?`
+      <div class="card">
+        <div class="card-title">Daftar Voucher Member</div>
+        ${vouchers.length===0?'<div style="color:var(--text3);font-size:13px">Belum ada voucher</div>':
+          vouchers.map(([vid,v])=>`
+            <div class="list-item">
+              <div class="list-item-info">
+                <div class="list-item-name">${state.members[v.member]?.name||v.member}</div>
+                <div class="list-item-sub">Kode: ${v.code} · ${v.description||'Voucher'}</div>
+              </div>
+              <span class="badge ${v.redeemed?'badge-red':'badge-green'}">${v.redeemed?'Diredeem':'Aktif'}</span>
+            </div>
+          `).join('')
+        }
+      </div>
+    `:''}
+  `;
+}
+window.renderMemberAdmin = renderMemberAdmin;
+
+async function addMember() {
+  const name = document.getElementById('new-member-name').value.trim();
+  const no = document.getElementById('new-member-no').value.trim();
+  if(!name||!no) return toast('Isi semua field','error');
+  if(state.members[no]) return toast('Member sudah ada','error');
+  await dbWrite(`members/${no}`, { name, points: 0, createdAt: Date.now() });
+  document.getElementById('new-member-name').value='';
+  document.getElementById('new-member-no').value='';
+  toast('Member ditambahkan!');
+}
+window.addMember = addMember;
+
+// BILLING ADMIN
+function renderBillingAdmin() {
+  const mc = document.getElementById('main-content');
+  const cats = Object.entries(state.categories||{});
+  mc.innerHTML = `
+    ${adminHeader('⏱ Manajemen Billing')}
+    <div class="card">
+      <div class="card-title">Tambah Kategori</div>
+      <div class="row">
+        <input id="cat-name" placeholder="Nama Kategori">
+        <input id="cat-icon" placeholder="Emoji Icon" style="max-width:80px">
+      </div>
+      <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="addCategory()">Tambah</button>
+    </div>
+    ${cats.map(([cid,cat])=>`
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-family:'Syne',sans-serif;font-weight:700">${cat.icon||'🎮'} ${cat.name}</div>
+          <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cid}')">Hapus</button>
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Jenis:</div>
+        ${Object.entries(cat.types||{}).map(([tid,type])=>`
+          <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <strong style="font-size:13px">${type.name}</strong>
+              <button class="btn btn-danger btn-sm" onclick="deleteType('${cid}','${tid}')">Hapus</button>
+            </div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Paket:</div>
+            ${Object.entries(type.packages||{}).map(([pid,pkg])=>`
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="font-size:12px">${pkg.name} · ${pkg.duration} · ${formatRp(pkg.price)}</span>
+                <button class="btn-icon" onclick="deletePackage('${cid}','${tid}','${pid}')">🗑</button>
+              </div>
+            `).join('')}
+            <div class="row" style="margin-top:8px">
+              <input id="pkg-name-${tid}" placeholder="Nama Paket" style="font-size:12px">
+              <input id="pkg-dur-${tid}" placeholder="Durasi (1 jam)" style="font-size:12px">
+              <input id="pkg-price-${tid}" placeholder="Harga" type="number" style="font-size:12px">
+              <button class="btn btn-secondary btn-sm" onclick="addPackage('${cid}','${tid}')">+</button>
+            </div>
+          </div>
+        `).join('')}
+        <div class="row" style="margin-top:8px">
+          <input id="type-name-${cid}" placeholder="Nama Jenis Baru">
+          <button class="btn btn-secondary btn-sm" onclick="addType('${cid}')">+ Jenis</button>
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+window.renderBillingAdmin = renderBillingAdmin;
+
+async function addCategory() {
+  const name = document.getElementById('cat-name').value.trim();
+  const icon = document.getElementById('cat-icon').value.trim();
+  if(!name) return toast('Isi nama kategori','error');
+  await dbPushData('categories', { name, icon: icon||'🎮', types: {} });
+  toast('Kategori ditambahkan');
+}
+window.addCategory = addCategory;
+
+async function deleteCategory(cid) {
+  if(!confirm('Hapus kategori ini?')) return;
+  await dbDel(`categories/${cid}`);
+  toast('Kategori dihapus');
+}
+window.deleteCategory = deleteCategory;
+
+async function addType(cid) {
+  const name = document.getElementById(`type-name-${cid}`).value.trim();
+  if(!name) return;
+  await dbPushData(`categories/${cid}/types`, { name, packages: {} });
+  toast('Jenis ditambahkan');
+}
+window.addType = addType;
+
+async function deleteType(cid, tid) {
+  await dbDel(`categories/${cid}/types/${tid}`);
+  toast('Jenis dihapus');
+}
+window.deleteType = deleteType;
+
+async function addPackage(cid, tid) {
+  const name = document.getElementById(`pkg-name-${tid}`).value.trim();
+  const duration = document.getElementById(`pkg-dur-${tid}`).value.trim();
+  const price = parseInt(document.getElementById(`pkg-price-${tid}`).value)||0;
+  if(!name||!duration) return toast('Isi nama dan durasi','error');
+  await dbPushData(`categories/${cid}/types/${tid}/packages`, { name, duration, price });
+  toast('Paket ditambahkan');
+}
+window.addPackage = addPackage;
+
+async function deletePackage(cid, tid, pid) {
+  await dbDel(`categories/${cid}/types/${tid}/packages/${pid}`);
+  toast('Paket dihapus');
+}
+window.deletePackage = deletePackage;
+
+// INVENTORY
+function renderInventoryAdmin() {
+  const mc = document.getElementById('main-content');
+  const items = Object.entries(state.inventory||{});
+  mc.innerHTML = `
+    ${adminHeader('📦 Inventory')}
+    <div class="card">
+      <div class="card-title">Tambah Barang</div>
+      <div class="form-group"><label>Barcode</label><input id="inv-barcode" placeholder="Barcode"></div>
+      <div class="form-group"><label>Nama Barang</label><input id="inv-name" placeholder="Nama Barang"></div>
+      <div class="row">
+        <div class="form-group"><label>Harga Beli</label><input id="inv-buy" type="number" placeholder="0"></div>
+        <div class="form-group"><label>Harga Jual</label><input id="inv-sell" type="number" placeholder="0"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">PLU akan terbentuk otomatis dari 4 digit terakhir barcode</div>
+      <button class="btn btn-primary btn-full" onclick="addInventory()">Tambah Barang</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Daftar Barang</div>
+      ${items.length===0?'<div style="color:var(--text3);font-size:13px">Belum ada barang</div>':
+        items.map(([id,item])=>`
+          <div class="list-item">
+            <div class="list-item-info">
+              <div class="list-item-name">${item.name}</div>
+              <div class="list-item-sub">PLU: ${item.plu} · Beli: ${formatRp(item.buyPrice)} · Jual: ${formatRp(item.sellingPrice)}</div>
+            </div>
+            <button class="btn-icon" onclick="deleteInventory('${id}')">🗑</button>
+          </div>
+        `).join('')
+      }
+    </div>
+  `;
+}
+window.renderInventoryAdmin = renderInventoryAdmin;
+
+async function addInventory() {
+  const barcode = document.getElementById('inv-barcode').value.trim();
+  const name = document.getElementById('inv-name').value.trim();
+  const buyPrice = parseInt(document.getElementById('inv-buy').value)||0;
+  const sellingPrice = parseInt(document.getElementById('inv-sell').value)||0;
+  if(!name) return toast('Isi nama barang','error');
+  const plu = genPLU(barcode);
+  await dbPushData('inventory', { barcode, name, buyPrice, sellingPrice, plu, createdAt: Date.now() });
+  toast('Barang ditambahkan');
+}
+window.addInventory = addInventory;
+
+async function deleteInventory(id) {
+  if(!confirm('Hapus barang ini?')) return;
+  await dbDel(`inventory/${id}`);
+  toast('Barang dihapus');
+}
+window.deleteInventory = deleteInventory;
+
+// EXPENSES
+function renderExpenses() {
+  const mc = document.getElementById('main-content');
+  const exps = Object.entries(state.expenses||{});
+  const today = new Date().toISOString().split('T')[0];
+  const monthStart = today.substr(0,7)+'-01';
+  const from = document.getElementById('exp-from')?.value||monthStart;
+  const to = document.getElementById('exp-to')?.value||today;
+  const filtered = exps.filter(([,e])=>filterByDate(e.createdAt,from,to));
+  const total = filtered.reduce((s,[,e])=>s+e.amount,0);
+
+  mc.innerHTML = `
+    ${adminHeader('💸 Pengeluaran')}
+    <div class="card">
+      <div class="card-title">Catat Pengeluaran</div>
+      <div class="form-group"><label>Tujuan</label><input id="exp-desc" placeholder="Beli bahan, listrik, dll"></div>
+      <div class="form-group"><label>Nominal</label><input id="exp-amount" type="number" placeholder="0"></div>
+      <button class="btn btn-primary btn-full" onclick="addExpense()">Catat</button>
+    </div>
+    <div class="card">
+      <div class="card-title">Filter & Total</div>
+      <div class="row">
+        <div class="form-group"><label>Dari</label><input type="date" id="exp-from" value="${from}"></div>
+        <div class="form-group"><label>Sampai</label><input type="date" id="exp-to" value="${to}"></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="renderExpenses()">Tampilkan</button>
+      <div style="margin-top:10px;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)">Total: ${formatRp(total)}</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Rincian</div>
+      ${filtered.slice().reverse().map(([id,e])=>`
+        <div class="list-item">
+          <div class="list-item-info">
+            <div class="list-item-name">${e.description}</div>
+            <div class="list-item-sub">${formatDateTime(e.createdAt)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-weight:600">${formatRp(e.amount)}</span>
+            <button class="btn-icon" onclick="deleteExpense('${id}')">🗑</button>
+          </div>
+        </div>
+      `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada pengeluaran</div>'}
+    </div>
+  `;
+}
+window.renderExpenses = renderExpenses;
+
+async function addExpense() {
+  const description = document.getElementById('exp-desc').value.trim();
+  const amount = parseInt(document.getElementById('exp-amount').value)||0;
+  if(!description||!amount) return toast('Isi semua field','error');
+  await dbPushData('expenses', { description, amount, createdAt: Date.now() });
+  document.getElementById('exp-desc').value='';
+  document.getElementById('exp-amount').value='';
+  toast('Pengeluaran dicatat');
+}
+window.addExpense = addExpense;
+
+async function deleteExpense(id) {
+  await dbDel(`expenses/${id}`);
+  toast('Dihapus');
+}
+window.deleteExpense = deleteExpense;
+
+// SETUP
+function renderSetup() {
+  const mc = document.getElementById('main-content');
+  mc.innerHTML = `
+    ${adminHeader('⚙️ Setup')}
+    <div class="card">
+      <div class="card-title">Ganti PIN Admin</div>
+      <div class="form-group"><label>PIN Baru</label><input type="password" id="new-pin" placeholder="PIN baru" maxlength="8"></div>
+      <div class="form-group"><label>Konfirmasi PIN</label><input type="password" id="confirm-pin" placeholder="Ulangi PIN" maxlength="8"></div>
+      <button class="btn btn-primary btn-full" onclick="changePin()">Ganti PIN</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🎁 Beri Voucher Manual</div>
+      <div class="form-group"><label>No Member</label><input id="gift-member" placeholder="No HP Member" type="tel"></div>
+      <div class="form-group"><label>Keterangan Hadiah</label><input id="gift-desc" placeholder="Gratis 1 jam, diskon 50%, dll"></div>
+      <button class="btn btn-primary btn-full" onclick="giveVoucher()">Beri Voucher</button>
+    </div>
+  `;
+}
+window.renderSetup = renderSetup;
+
+async function changePin() {
+  const np = document.getElementById('new-pin').value;
+  const cp = document.getElementById('confirm-pin').value;
+  if(!np||np!==cp) return toast('PIN tidak cocok','error');
+  if(np.length<4) return toast('PIN minimal 4 digit','error');
+  await dbWrite('settings/pin', np);
+  state.settings.pin = np;
+  toast('PIN berhasil diganti');
+}
+window.changePin = changePin;
+
+async function giveVoucher() {
+  const no = document.getElementById('gift-member').value.trim();
+  const desc = document.getElementById('gift-desc').value.trim();
+  if(!no||!desc) return toast('Isi semua field','error');
+  if(!state.members[no]) return toast('Member tidak ditemukan','error');
+  const code = genCode();
+  await dbPushData('vouchers', { member: no, code, description: desc, redeemed: false, createdAt: Date.now() });
+  toast(`Voucher ${code} diberikan ke ${state.members[no].name}`);
+  document.getElementById('gift-member').value='';
+  document.getElementById('gift-desc').value='';
+}
+window.giveVoucher = giveVoucher;
+
+// ============================================================
+// MEMBER POINTS & VOUCHERS
+// ============================================================
+async function addPoints(memberNo, pts) {
+  const m = state.members[memberNo];
+  if(!m) return;
+  const newPts = (m.points||0) + pts;
+  await dbWrite(`members/${memberNo}/points`, newPts);
+}
+
+async function checkVoucherMilestone(memberNo) {
+  const m = await dbRead(`members/${memberNo}`);
+  if(!m) return;
+  const pts = m.points||0;
+  const claimed = m.voucherClaimed||0;
+  const eligible = Math.floor(pts/100);
+  if(eligible > claimed) {
+    // Give voucher
+    const code = genCode();
+    await dbPushData('vouchers', { member: memberNo, code, description: 'Gratis 1 Jam (100 Poin)', redeemed: false, createdAt: Date.now() });
+    await dbWrite(`members/${memberNo}/voucherClaimed`, eligible);
+    toast(`🎉 ${m.name} dapat voucher gratis 1 jam!`);
+  }
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+window.addEventListener('firebase-ready', () => {
+  initListeners();
+  renderHome();
+});
+
+// fallback if firebase-ready already fired
+if(window.firebaseReady) {
+  initListeners();
+  renderHome();
+}
+</script>
+</body>
+</html>
