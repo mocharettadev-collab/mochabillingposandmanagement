@@ -1,201 +1,508 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Mocha Management</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --bg: #0f0d0b;
-  --surface: #1a1714;
-  --surface2: #242018;
-  --border: #2e2820;
-  --accent: #c8893a;
-  --accent2: #e8a84a;
-  --text: #f0e8dc;
-  --text2: #a09080;
-  --text3: #6a5a4a;
-  --green: #4caf7d;
-  --red: #e05555;
-  --blue: #5599ee;
-  --yellow: #f0c040;
-  --radius: 12px;
-  --radius-sm: 8px;
+  --mocha-900:#2C1A0E;
+  --mocha-800:#3D2314;
+  --mocha-700:#5C3520;
+  --mocha-600:#7A4A2E;
+  --mocha-500:#9B6240;
+  --mocha-400:#B8845C;
+  --mocha-300:#D4A882;
+  --mocha-200:#EBCFB0;
+  --mocha-100:#F5E8D8;
+  --mocha-50:#FBF5EE;
+  --cream:#FDFAF6;
+  --white:#FFFFFF;
+  --success:#4CAF50;
+  --danger:#E53935;
+  --warning:#FF9800;
+  --info:#2196F3;
+  --bg:var(--cream);
+  --surface:var(--white);
+  --surface2:var(--mocha-50);
+  --border:var(--mocha-200);
+  --text-primary:var(--mocha-900);
+  --text-secondary:var(--mocha-600);
+  --text-muted:var(--mocha-400);
+  --accent:var(--mocha-700);
+  --accent-light:var(--mocha-300);
+  --nav-bg:var(--white);
+  --header-bg:var(--mocha-800);
+  --header-text:#FDFAF6;
+  --card-shadow:0 2px 12px rgba(44,26,14,0.08);
+  --modal-overlay:rgba(44,26,14,0.5);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-h1,h2,h3,h4 { font-family: 'Syne', sans-serif; }
-
-/* LAYOUT */
-#app { display: flex; flex-direction: column; min-height: 100vh; }
-.top-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; }
-.top-bar .logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
-.top-bar .clock { margin-left: auto; font-size: 13px; color: var(--text2); }
-.main-content { flex: 1; padding: 16px; max-width: 900px; width: 100%; margin: 0 auto; }
-.bottom-nav { background: var(--surface); border-top: 1px solid var(--border); display: flex; position: sticky; bottom: 0; z-index: 100; }
-.nav-btn { flex: 1; padding: 12px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--text3); cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 10px; transition: color .2s; }
-.nav-btn.active { color: var(--accent); }
-.nav-btn svg { width: 22px; height: 22px; }
-
+[data-theme="dark"] {
+  --bg:#1A0F07;
+  --surface:#261408;
+  --surface2:#331B0C;
+  --border:#5C3520;
+  --text-primary:#F5E8D8;
+  --text-secondary:#D4A882;
+  --text-muted:#9B6240;
+  --accent:var(--mocha-300);
+  --accent-light:var(--mocha-600);
+  --nav-bg:#1A0F07;
+  --header-bg:#1A0F07;
+  --header-text:#F5E8D8;
+  --card-shadow:0 2px 12px rgba(0,0,0,0.4);
+  --modal-overlay:rgba(0,0,0,0.7);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text-primary);transition:background .3s,color .3s;min-height:100vh;}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;}
+/* HEADER */
+#header{background:var(--header-bg);color:var(--header-text);padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+#header .logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;letter-spacing:.5px;}
+#header .logo span{color:var(--mocha-300);}
+.header-actions{display:flex;align-items:center;gap:8px;}
+.icon-btn{background:rgba(255,255,255,0.1);border:none;color:var(--header-text);width:36px;height:36px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:background .2s;}
+.icon-btn:hover{background:rgba(255,255,255,0.2);}
+.header-menu-btn{background:rgba(255,255,255,0.1);border:none;color:var(--header-text);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:.8rem;font-family:'DM Sans',sans-serif;font-weight:500;transition:background .2s;white-space:nowrap;}
+.header-menu-btn:hover{background:rgba(255,255,255,0.2);}
+/* BOTTOM NAV */
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav-bg);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -2px 8px rgba(0,0,0,0.08);}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;cursor:pointer;transition:color .2s;color:var(--text-muted);border:none;background:none;font-family:'DM Sans',sans-serif;}
+.nav-item.active{color:var(--mocha-700);}
+[data-theme="dark"] .nav-item.active{color:var(--mocha-300);}
+.nav-item svg{width:22px;height:22px;margin-bottom:2px;}
+.nav-item span{font-size:.68rem;font-weight:500;}
+/* MAIN CONTENT */
+#main{margin-top:56px;margin-bottom:60px;padding:12px;}
+.page{display:none;}
+.page.active{display:block;}
 /* CARDS */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; }
-.card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
-
-/* INPUTS */
-input, select, textarea { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 12px; width: 100%; outline: none; transition: border-color .2s; }
-input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-input::placeholder { color: var(--text3); }
-select option { background: var(--surface2); }
-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; display: block; }
-.form-group { margin-bottom: 10px; }
-.row { display: flex; gap: 10px; }
-.row > * { flex: 1; }
-
-/* BUTTONS */
-.btn { border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; padding: 10px 18px; cursor: pointer; transition: all .2s; letter-spacing: 0.3px; }
-.btn-primary { background: var(--accent); color: #0f0d0b; }
-.btn-primary:hover { background: var(--accent2); }
-.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { border-color: var(--accent); }
-.btn-danger { background: var(--red); color: #fff; }
-.btn-success { background: var(--green); color: #0f0d0b; }
-.btn-blue { background: var(--blue); color: #fff; }
-.btn-sm { padding: 6px 12px; font-size: 11px; }
-.btn-full { width: 100%; }
-.btn-icon { background: none; border: none; cursor: pointer; color: var(--text2); padding: 4px; border-radius: 6px; }
-.btn-icon:hover { color: var(--accent); background: var(--surface2); }
-
-/* BADGES */
-.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.badge-green { background: #4caf7d22; color: var(--green); }
-.badge-red { background: #e0555522; color: var(--red); }
-.badge-yellow { background: #f0c04022; color: var(--yellow); }
-.badge-blue { background: #5599ee22; color: var(--blue); }
-.badge-accent { background: #c8893a22; color: var(--accent); }
-
-/* TABS */
-.tabs { display: flex; gap: 4px; background: var(--bg); border-radius: var(--radius-sm); padding: 4px; margin-bottom: 14px; }
-.tab { flex: 1; padding: 8px; text-align: center; font-size: 12px; font-family: 'Syne', sans-serif; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--text2); transition: all .2s; border: none; background: none; }
-.tab.active { background: var(--accent); color: #0f0d0b; }
-
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); }
-.modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
-.modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
-.modal-body { padding: 20px; }
-.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; }
-.modal-footer .btn { flex: 1; }
-
-/* TIMER */
-.timer-display { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; color: var(--accent); text-align: center; letter-spacing: 2px; }
-.timer-label { font-size: 11px; color: var(--text2); text-align: center; }
-
+.card{background:var(--surface);border-radius:12px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:12px;border:1px solid var(--border);}
+.card-title{font-size:.8rem;color:var(--text-muted);font-weight:500;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
+.card-value{font-size:1.4rem;font-weight:700;color:var(--text-primary);}
 /* BILLING CARD */
-.billing-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px; }
-.billing-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-.billing-card-name { font-weight: 600; font-size: 14px; }
-.billing-card-meta { font-size: 11px; color: var(--text2); }
-.billing-card-actions { display: flex; gap: 6px; margin-top: 10px; }
-
-/* MEMBER INFO */
-.member-info-box { background: var(--surface2); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 12px; margin-top: 10px; }
-.member-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; }
-.member-stats { display: flex; gap: 16px; margin-top: 6px; }
-.member-stat { text-align: center; }
-.member-stat .val { font-size: 20px; font-weight: 700; color: var(--accent); font-family: 'Syne', sans-serif; }
-.member-stat .lbl { font-size: 10px; color: var(--text2); }
-
-/* LIST ITEMS */
-.list-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 10px; }
-.list-item:last-child { border-bottom: none; }
-.list-item-info { flex: 1; }
-.list-item-name { font-size: 14px; font-weight: 500; }
-.list-item-sub { font-size: 11px; color: var(--text2); }
-
-/* STAT BOX */
-.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-.stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
-.stat-box .val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--accent); }
-.stat-box .lbl { font-size: 11px; color: var(--text2); margin-top: 2px; }
-
-/* SCROLL */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
+.billing-card{background:var(--surface);border-radius:14px;padding:14px;box-shadow:var(--card-shadow);margin-bottom:10px;border-left:4px solid var(--mocha-500);position:relative;border:1px solid var(--border);border-left:4px solid var(--mocha-500);}
+.billing-card.active-billing{border-left-color:var(--success);}
+.billing-card.paused{border-left-color:var(--warning);}
+.billing-name{font-size:1rem;font-weight:700;color:var(--text-primary);}
+.billing-meta{font-size:.78rem;color:var(--text-secondary);margin-top:2px;}
+.billing-timer{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--mocha-700);text-align:right;}
+[data-theme="dark"] .billing-timer{color:var(--mocha-300);}
+.billing-actions{display:flex;gap:6px;margin-top:10px;}
+.btn{padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;transition:all .2s;}
+.btn-primary{background:var(--mocha-700);color:#fff;}
+.btn-primary:hover{background:var(--mocha-800);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text-primary);}
+.btn-outline:hover{background:var(--surface2);}
+.btn-sm{padding:5px 10px;font-size:.75rem;}
+.btn-full{width:100%;}
+/* FORMS */
+.form-group{margin-bottom:12px;}
+label{display:block;font-size:.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:4px;}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border .2s;}
+input:focus,select:focus,textarea:focus{border-color:var(--mocha-500);}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:var(--modal-overlay);z-index:200;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease;}
+.modal-title{font-size:1.2rem;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:14px;}
+.tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;color:var(--text-muted);border-bottom:2px solid transparent;margin-bottom:-2px;transition:color .2s,border-color .2s;}
+.tab.active{color:var(--mocha-700);border-bottom-color:var(--mocha-700);}
+[data-theme="dark"] .tab.active{color:var(--mocha-300);border-bottom-color:var(--mocha-300);}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+/* BADGE */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.72rem;font-weight:600;}
+.badge-success{background:rgba(76,175,80,.15);color:#2e7d32;}
+.badge-warning{background:rgba(255,152,0,.15);color:#e65100;}
+.badge-info{background:rgba(33,150,243,.15);color:#1565c0;}
+.badge-mocha{background:var(--mocha-100);color:var(--mocha-700);}
+[data-theme="dark"] .badge-mocha{background:var(--mocha-800);color:var(--mocha-300);}
+/* DOT INDICATOR */
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px;}
+.dot-green{background:var(--success);}
+.dot-orange{background:var(--warning);}
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+/* LIST */
+.list-item{padding:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.list-item:last-child{border-bottom:none;}
+/* SEARCH */
+.search-box{position:relative;margin-bottom:12px;}
+.search-box input{padding-left:36px;}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-muted);}
+/* CATEGORY BTN */
+.cat-btn{padding:8px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text-primary);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;transition:all .2s;white-space:nowrap;}
+.cat-btn.active,.cat-btn:hover{background:var(--mocha-700);color:#fff;border-color:var(--mocha-700);}
+.cat-scroll{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+/* PRODUCT CARD */
+.product-card{background:var(--surface);border-radius:10px;padding:12px;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
+.product-card:hover,.product-card.selected{border-color:var(--mocha-500);background:var(--mocha-50);}
+[data-theme="dark"] .product-card:hover,[data-theme="dark"] .product-card.selected{background:var(--mocha-800);}
+/* SECTION TITLE */
+.section-title{font-size:1.1rem;font-weight:700;margin-bottom:10px;color:var(--text-primary);}
+/* PIN */
+.pin-dots{display:flex;justify-content:center;gap:12px;margin:16px 0;}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:var(--border);transition:background .2s;}
+.pin-dot.filled{background:var(--mocha-700);}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:240px;margin:0 auto;}
+.pin-key{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;font-size:1.3rem;font-weight:600;cursor:pointer;transition:all .2s;}
+.pin-key:hover{background:var(--mocha-100);}
+/* TIMER */
+.timer-big{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:700;color:var(--mocha-700);text-align:center;padding:8px 0;}
+[data-theme="dark"] .timer-big{color:var(--mocha-300);}
+/* STAT CARD */
+.stat-card{background:var(--surface);border-radius:12px;padding:14px;border:1px solid var(--border);box-shadow:var(--card-shadow);}
+.stat-label{font-size:.75rem;color:var(--text-muted);font-weight:500;margin-bottom:4px;}
+.stat-val{font-size:1.3rem;font-weight:700;color:var(--text-primary);}
+.stat-sub{font-size:.72rem;color:var(--text-muted);margin-top:2px;}
+/* PROGRESS */
+.progress-bar{background:var(--border);border-radius:4px;height:6px;overflow:hidden;margin-top:4px;}
+.progress-fill{height:100%;border-radius:4px;background:var(--mocha-500);transition:width .4s;}
+/* RANK */
+.rank-num{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--mocha-400);min-width:28px;}
+.rank-num.gold{color:#FFD700;}
+.rank-num.silver{color:#C0C0C0;}
+.rank-num.bronze{color:#CD7F32;}
+/* SCROLLABLE PANEL */
+.scroll-panel{max-height:320px;overflow-y:auto;}
 /* TOAST */
-.toast-container { position: fixed; top: 70px; right: 16px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
-.toast { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; font-size: 13px; max-width: 280px; animation: slideIn .3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
-.toast.success { border-color: var(--green); }
-.toast.error { border-color: var(--red); }
-@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-/* CART ITEM */
-.cart-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
-.cart-item-info { flex: 1; }
-.qty-ctrl { display: flex; align-items: center; gap: 8px; }
-.qty-btn { width: 28px; height: 28px; border-radius: 6px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-/* CATEGORY SELECTOR */
-.cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.cat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; cursor: pointer; transition: all .2s; text-align: center; }
-.cat-card:hover, .cat-card.selected { border-color: var(--accent); background: #c8893a15; }
-.cat-card .cat-icon { font-size: 28px; margin-bottom: 6px; }
-.cat-card .cat-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; }
-
-/* PACKAGE CARD */
-.pkg-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; cursor: pointer; transition: all .2s; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-.pkg-card:hover, .pkg-card.selected { border-color: var(--accent); }
-
-/* ADMIN MENU */
-.admin-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.admin-menu-item { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 14px; text-align: center; cursor: pointer; transition: all .2s; }
-.admin-menu-item:hover { border-color: var(--accent); background: #c8893a10; }
-.admin-menu-item .icon { font-size: 32px; margin-bottom: 8px; }
-.admin-menu-item .name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; }
-
+#toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--mocha-800);color:#fff;padding:10px 20px;border-radius:10px;font-size:.85rem;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;}
+#toast.show{opacity:1;}
+/* DIVIDER */
+.divider{border:none;border-top:1px solid var(--border);margin:12px 0;}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+.empty-state svg{width:48px;height:48px;margin-bottom:10px;opacity:.4;}
+/* HEADER DROPDOWN */
+.hdr-dropdown{position:relative;display:inline-block;}
+.hdr-dropdown-menu{position:absolute;right:0;top:44px;background:var(--surface);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);border:1px solid var(--border);min-width:180px;z-index:200;display:none;}
+.hdr-dropdown-menu.open{display:block;}
+.hdr-dropdown-item{padding:10px 14px;cursor:pointer;font-size:.85rem;color:var(--text-primary);display:flex;align-items:center;gap:8px;transition:background .15s;}
+.hdr-dropdown-item:hover{background:var(--surface2);}
+/* TOGGLE */
+.toggle{position:relative;width:44px;height:24px;display:inline-block;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.3s;}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle input:checked+.toggle-slider{background:var(--mocha-600);}
+.toggle input:checked+.toggle-slider:before{transform:translateX(20px);}
+/* QTY CONTROL */
+.qty-control{display:flex;align-items:center;gap:10px;}
+.qty-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);background:var(--surface);cursor:pointer;font-size:1.1rem;font-weight:700;color:var(--text-primary);display:flex;align-items:center;justify-content:center;}
+.qty-val{font-weight:700;font-size:1rem;min-width:24px;text-align:center;}
+/* VOUCHER CARD */
+.voucher-card{background:linear-gradient(135deg,var(--mocha-700),var(--mocha-500));border-radius:12px;padding:14px;color:#fff;position:relative;overflow:hidden;}
+.voucher-card::before{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;background:rgba(255,255,255,.1);border-radius:50%;}
+.voucher-code{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;letter-spacing:2px;}
 /* RESPONSIVE */
-@media (min-width: 600px) {
-  .stat-grid { grid-template-columns: repeat(3, 1fr); }
-  .cat-grid { grid-template-columns: repeat(3, 1fr); }
-  .admin-menu-grid { grid-template-columns: repeat(3, 1fr); }
-}
+@media(max-width:360px){.billing-timer{font-size:1.3rem;}.timer-big{font-size:1.8rem;}}
 </style>
 </head>
 <body>
-<div id="app">
-  <div class="top-bar">
-    <div class="logo">☕ Mocha</div>
-    <div id="clock" class="clock"></div>
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">☕ <span>Mocha</span>Mgmt</div>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" title="Mode Gelap/Terang">🌙</button>
+    <div class="hdr-dropdown" id="headerMenu">
+      <button class="header-menu-btn" onclick="toggleHeaderMenu()">≡ Menu</button>
+      <div class="hdr-dropdown-menu" id="headerDropdown">
+        <div class="hdr-dropdown-item" onclick="openModal('modalAddMember')">👤 Tambah Member</div>
+        <div class="hdr-dropdown-item" onclick="openModal('modalCekMember')">🔍 Cek Status Member</div>
+        <div class="hdr-dropdown-item" onclick="openModal('modalRedeemVoucher')">🎁 Penukaran Voucher</div>
+        <div class="hdr-dropdown-item" onclick="openModal('modalTukarPoin')">💎 Tukar Poin</div>
+        <div class="hdr-dropdown-item" onclick="openModal('modalBilling')">🧾 Simpan/Ambil Billing</div>
+      </div>
+    </div>
   </div>
-  <div class="main-content" id="main-content"></div>
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="navigate('home')" id="nav-home">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-      Home
-    </button>
-    <button class="nav-btn" onclick="navigate('list')" id="nav-list">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      List
-    </button>
-    <button class="nav-btn" onclick="navigate('pos')" id="nav-pos">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="1" y="3" width="22" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
-      POS
-    </button>
-    <button class="nav-btn" onclick="navigate('admin')" id="nav-admin">
-      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Admin
-    </button>
-  </nav>
 </div>
-<div class="toast-container" id="toast-container"></div>
-<div id="modal-container"></div>
 
-<!-- FIREBASE -->
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- MAIN -->
+<div id="main">
+  <!-- HOME PAGE -->
+  <div class="page active" id="pageHome">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <h2 style="font-size:1.2rem;">Billing Aktif</h2>
+      <button class="btn btn-warning btn-sm" onclick="pauseAll()">⏸ Pause Semua</button>
+    </div>
+    <div id="activeBillingList"><div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Tidak ada billing aktif</p></div></div>
+  </div>
+
+  <!-- LIST PAGE -->
+  <div class="page" id="pageList">
+    <h2 style="font-size:1.2rem;margin-bottom:12px;">Daftar Layanan</h2>
+    <div id="categoryListArea"></div>
+  </div>
+
+  <!-- POS PAGE -->
+  <div class="page" id="pagePos">
+    <h2 style="font-size:1.2rem;margin-bottom:12px;">Point of Sale</h2>
+    <div class="tabs">
+      <div class="tab active" onclick="switchPosTab('tabCart',this)">🛒 Keranjang</div>
+      <div class="tab" onclick="switchPosTab('tabProducts',this)">📦 Barang</div>
+      <div class="tab" onclick="switchPosTab('tabHistoryPos',this)">📋 History</div>
+    </div>
+    <div class="tab-content active" id="tabCart">
+      <div id="cartItems"><div class="empty-state"><p>Keranjang kosong</p></div></div>
+      <div id="cartSummary" style="display:none;">
+        <hr class="divider"/>
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;margin-bottom:12px;">
+          <span>Total</span><span id="cartTotal">Rp 0</span>
+        </div>
+        <div class="form-group">
+          <label>No Member (Opsional)</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="posMemberInput" placeholder="Masukan No Member"/>
+            <button class="btn btn-outline btn-sm" onclick="cekPosMember()">Cek</button>
+          </div>
+        </div>
+        <div id="posMemberInfo" style="display:none;" class="card" style="padding:10px;"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" style="flex:1" onclick="openPayModal('cash')">💵 Tunai</button>
+          <button class="btn btn-outline" style="flex:1" onclick="openPayModal('noncash')">💳 Non-Tunai</button>
+        </div>
+      </div>
+    </div>
+    <div class="tab-content" id="tabProducts">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="productSearch" placeholder="Cari nama, barcode, PLU..." oninput="filterProducts()"/>
+      </div>
+      <div id="productGrid" class="grid-2"></div>
+    </div>
+    <div class="tab-content" id="tabHistoryPos">
+      <div id="historyPosList"></div>
+    </div>
+  </div>
+
+  <!-- ADMIN PAGE -->
+  <div class="page" id="pageAdmin">
+    <div id="adminLoginArea">
+      <div style="max-width:280px;margin:40px auto;text-align:center;">
+        <h2 style="margin-bottom:8px;">Admin Panel</h2>
+        <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:24px;">Masukan PIN untuk masuk</p>
+        <div class="pin-dots" id="pinDots">
+          <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+        </div>
+        <div class="pin-pad" id="pinPad">
+          <div class="pin-key" onclick="pinInput('1')">1</div><div class="pin-key" onclick="pinInput('2')">2</div><div class="pin-key" onclick="pinInput('3')">3</div>
+          <div class="pin-key" onclick="pinInput('4')">4</div><div class="pin-key" onclick="pinInput('5')">5</div><div class="pin-key" onclick="pinInput('6')">6</div>
+          <div class="pin-key" onclick="pinInput('7')">7</div><div class="pin-key" onclick="pinInput('8')">8</div><div class="pin-key" onclick="pinInput('9')">9</div>
+          <div class="pin-key" onclick="pinClear()">⌫</div><div class="pin-key" onclick="pinInput('0')">0</div><div class="pin-key" onclick="pinSubmit()">✓</div>
+        </div>
+      </div>
+    </div>
+    <div id="adminPanelArea" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h2 style="font-size:1.2rem;">Admin Panel</h2>
+        <button class="btn btn-danger btn-sm" onclick="adminLogout()">Logout</button>
+      </div>
+      <div class="cat-scroll" style="margin-bottom:14px;" id="adminMenuScroll">
+        <button class="cat-btn active" onclick="switchAdminMenu('dashboard',this)">📊 Dashboard</button>
+        <button class="cat-btn" onclick="switchAdminMenu('achievement',this)">🏆 Achievement</button>
+        <button class="cat-btn" onclick="switchAdminMenu('member',this)">👥 Member</button>
+        <button class="cat-btn" onclick="switchAdminMenu('billing',this)">🧾 Billing</button>
+        <button class="cat-btn" onclick="switchAdminMenu('inventory',this)">📦 Inventory</button>
+        <button class="cat-btn" onclick="switchAdminMenu('expense',this)">💸 Pengeluaran</button>
+        <button class="cat-btn" onclick="switchAdminMenu('historyposAdmin',this)">📋 History POS</button>
+        <button class="cat-btn" onclick="switchAdminMenu('historyBilling',this)">🧾 History Billing</button>
+        <button class="cat-btn" onclick="switchAdminMenu('setup',this)">⚙️ Setup</button>
+      </div>
+      <div id="adminContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div id="bottom-nav">
+  <button class="nav-item active" onclick="navigate('Home',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </button>
+  <button class="nav-item" onclick="navigate('List',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span>List</span>
+  </button>
+  <button class="nav-item" onclick="navigate('Pos',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <span>POS</span>
+  </button>
+  <button class="nav-item" onclick="navigate('Admin',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span>Admin</span>
+  </button>
+</div>
+
+<!-- MODALS -->
+
+<!-- Add Member Modal -->
+<div class="modal-overlay" id="modalAddMember">
+  <div class="modal">
+    <div class="modal-title">👤 Tambah Member</div>
+    <div class="form-group"><label>Nama</label><input type="text" id="newMemberName" placeholder="Nama member"/></div>
+    <div class="form-group"><label>No HP (jadi No Member)</label><input type="text" id="newMemberPhone" placeholder="08xxxxxxxxxx"/></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary btn-full" onclick="addMember()">💾 Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modalAddMember')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cek Member Modal -->
+<div class="modal-overlay" id="modalCekMember">
+  <div class="modal">
+    <div class="modal-title">🔍 Cek Status Member</div>
+    <div class="form-group"><label>No Member</label>
+      <div style="display:flex;gap:8px;"><input type="text" id="cekMemberInput" placeholder="Masukan No Member"/><button class="btn btn-primary btn-sm" onclick="cekMemberStatus()">Cek</button></div>
+    </div>
+    <div id="cekMemberResult"></div>
+    <button class="btn btn-outline btn-full" style="margin-top:10px;" onclick="closeModal('modalCekMember')">Tutup</button>
+  </div>
+</div>
+
+<!-- Redeem Voucher Modal -->
+<div class="modal-overlay" id="modalRedeemVoucher">
+  <div class="modal">
+    <div class="modal-title">🎁 Penukaran Voucher</div>
+    <div class="form-group"><label>No Member</label><input type="text" id="redeemMemberInput" placeholder="No Member"/></div>
+    <div class="form-group"><label>Kode Voucher</label><input type="text" id="redeemVoucherCode" placeholder="Kode Voucher"/></div>
+    <button class="btn btn-primary btn-full" onclick="cekVoucherRedeem()">Cek Voucher</button>
+    <div id="redeemVoucherResult" style="margin-top:10px;"></div>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalRedeemVoucher')">Tutup</button>
+  </div>
+</div>
+
+<!-- Tukar Poin Modal -->
+<div class="modal-overlay" id="modalTukarPoin">
+  <div class="modal">
+    <div class="modal-title">💎 Tukar Poin</div>
+    <div id="tukarPoinList" class="scroll-panel"></div>
+    <hr class="divider"/>
+    <div class="form-group"><label>No Member</label><input type="text" id="tukarPoinMember" placeholder="No Member"/></div>
+    <button class="btn btn-primary btn-full" onclick="doTukarPoin()">Tukarkan</button>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalTukarPoin')">Tutup</button>
+  </div>
+</div>
+
+<!-- Billing simpan/ambil Modal -->
+<div class="modal-overlay" id="modalBilling">
+  <div class="modal">
+    <div class="modal-title">🧾 Simpan & Ambil Billing</div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchBillingModalTab('saveBillTab',this)">Simpan</div>
+      <div class="tab" onclick="switchBillingModalTab('loadBillTab',this)">Ambil</div>
+    </div>
+    <div class="tab-content active" id="saveBillTab">
+      <div class="form-group"><label>Nama</label><input type="text" id="saveBillName" placeholder="Nama"/></div>
+      <div class="form-group"><label>No Member</label><input type="text" id="saveBillMember" placeholder="Opsional"/></div>
+      <div class="form-group"><label>Jumlah/Nominal</label><input type="number" id="saveBillAmount" placeholder="0"/></div>
+      <div class="form-group"><label>Simpan selama (menit)</label><input type="number" id="saveBillMinutes" placeholder="60"/></div>
+      <button class="btn btn-primary btn-full" onclick="saveBilling()">💾 Simpan</button>
+    </div>
+    <div class="tab-content" id="loadBillTab">
+      <div id="savedBillsList"></div>
+    </div>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalBilling')">Tutup</button>
+  </div>
+</div>
+
+<!-- Package Select Modal -->
+<div class="modal-overlay" id="modalPackage">
+  <div class="modal">
+    <div class="modal-title" id="pkgModalTitle">Pilih Paket</div>
+    <div id="pkgList"></div>
+    <div class="form-group" style="margin-top:10px;">
+      <label>No Member (Opsional)</label>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="pkgMemberInput" placeholder="No Member"/>
+        <button class="btn btn-outline btn-sm" onclick="cekPkgMember()">Cek</button>
+      </div>
+    </div>
+    <div id="pkgMemberInfo" style="display:none;" class="card"></div>
+    <div id="pkgQtyArea" style="display:none;margin-top:10px;">
+      <label>Qty</label>
+      <div class="qty-control" style="margin-top:6px;">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-val" id="pkgQtyVal">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <div style="margin-top:8px;font-weight:700;" id="pkgTotalPrice"></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button class="btn btn-primary" style="flex:1" onclick="startBillingPay('cash')">💵 Bayar Tunai</button>
+      <button class="btn btn-outline" style="flex:1" onclick="startBillingPay('noncash')">💳 Non-Tunai</button>
+    </div>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalPackage')">Batal</button>
+  </div>
+</div>
+
+<!-- Pay Modal -->
+<div class="modal-overlay" id="modalPay">
+  <div class="modal">
+    <div class="modal-title">💰 Pembayaran</div>
+    <div id="payDetail" style="margin-bottom:12px;"></div>
+    <div class="form-group"><label>Nominal Uang</label><input type="number" id="payAmount" placeholder="0" oninput="calcChange()"/></div>
+    <div id="payChange" style="font-size:.9rem;color:var(--text-secondary);margin-bottom:12px;"></div>
+    <button class="btn btn-success btn-full" onclick="confirmPay()">✓ Bayar &amp; Mulai</button>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalPay')">Batal</button>
+  </div>
+</div>
+
+<!-- POS Pay Modal -->
+<div class="modal-overlay" id="modalPosPay">
+  <div class="modal">
+    <div class="modal-title">💰 Pembayaran POS</div>
+    <div id="posPayDetail" style="margin-bottom:12px;"></div>
+    <div class="form-group"><label>Nominal Uang</label><input type="number" id="posPayAmount" placeholder="0" oninput="calcPosChange()"/></div>
+    <div id="posPayChange" style="font-size:.9rem;color:var(--text-secondary);margin-bottom:12px;"></div>
+    <button class="btn btn-success btn-full" onclick="confirmPosPay()">✓ Bayar</button>
+    <button class="btn btn-outline btn-full" style="margin-top:8px;" onclick="closeModal('modalPosPay')">Batal</button>
+  </div>
+</div>
+
+<!-- Confirm Redeem Modal -->
+<div class="modal-overlay" id="modalConfirmRedeem">
+  <div class="modal">
+    <div class="modal-title">🎁 Konfirmasi Redeem</div>
+    <div id="confirmRedeemContent"></div>
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <button class="btn btn-success btn-full" onclick="doRedeem()">✓ Redeem</button>
+      <button class="btn btn-outline" onclick="closeModal('modalConfirmRedeem')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Alert/Confirm Modal -->
+<div class="modal-overlay" id="modalAlert">
+  <div class="modal" style="border-radius:16px;max-width:320px;margin:auto;">
+    <div class="modal-title" id="alertTitle">Info</div>
+    <p id="alertMsg" style="color:var(--text-secondary);margin-bottom:16px;"></p>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary btn-full" id="alertOkBtn" onclick="closeModal('modalAlert')">OK</button>
+      <button class="btn btn-outline" id="alertCancelBtn" style="display:none;" onclick="closeModal('modalAlert')">Batal</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, push, update, remove, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+// ==============================
+// FIREBASE SETUP
+// ==============================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, get, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyASIgjZ_hqMFTmVJfRV8JnxmbbH78wCJY0",
@@ -207,1477 +514,1371 @@ const firebaseConfig = {
   appId: "1:1018956872787:web:6056f533ae86654dc11aa6",
   measurementId: "G-FHDPFLXFCF"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-window.db = db;
-window.dbRef = ref;
-window.dbSet = set;
-window.dbGet = get;
-window.dbPush = push;
-window.dbUpdate = update;
-window.dbRemove = remove;
-window.dbOnValue = onValue;
-window.dbServerTimestamp = serverTimestamp;
-window.firebaseReady = true;
-window.dispatchEvent(new Event('firebase-ready'));
-</script>
 
-<script>
-// ============================================================
+// ==============================
+// FIREBASE RULES (comment for reference)
+// ==============================
+/*
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "members": { ".indexOn": ["phone"] },
+    "transactions": { ".indexOn": ["date"] },
+    "billings": { ".indexOn": ["status"] },
+    "inventory": { ".indexOn": ["name","barcode","plu"] },
+    "expenses": { ".indexOn": ["date"] },
+    "poinExchange": { ".read": true, ".write": true },
+    "vouchers": { ".read": true, ".write": true },
+    "categories": { ".read": true, ".write": true }
+  }
+}
+*/
+
+// ==============================
 // GLOBAL STATE
-// ============================================================
-let state = {
-  page: 'home',
-  adminLoggedIn: false,
-  adminSubPage: null,
-  listStep: 'category',
-  listSelectedCategory: null,
-  listSelectedType: null,
-  listSelectedPackage: null,
-  listMemberInfo: null,
-  listQty: 1,
-  posCart: [],
-  posTab: 'cart',
-  posBarang: [],
-  posMemberInfo: null,
-  billings: {},
-  categories: {},
-  inventory: {},
-  members: {},
-  vouchers: {},
-  expenses: [],
-  transactions: [],
+// ==============================
+window.state = {
   activeBillings: {},
-  timers: {},
-  savedBillings: {},
-  settings: { pin: '1234' }
+  cart: [],
+  currentPkg: null,
+  currentPkgQty: 1,
+  currentPayType: 'cash',
+  currentPkgMember: null,
+  currentPosMember: null,
+  posPayType: 'cash',
+  adminLoggedIn: false,
+  pinBuffer: '',
+  adminPin: localStorage.getItem('adminPin') || '1234',
+  selectedPoinExchange: null,
+  timerIntervals: {},
+  selectedVoucher: null,
+  redeemMemberData: null,
+  savedBillings: JSON.parse(localStorage.getItem('savedBillings') || '[]'),
+  billingCompletedHistory: JSON.parse(localStorage.getItem('billingHistory') || '[]')
 };
 
-// ============================================================
-// UTILS
-// ============================================================
-function toast(msg, type='success') {
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+// ==============================
+// HELPERS
+// ==============================
+function fmt(n){return new Intl.NumberFormat('id-ID').format(n);}
+function fmtRp(n){return 'Rp '+fmt(n);}
+function fmtDate(ts){const d=new Date(ts);return d.toLocaleDateString('id-ID')+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+function genCode(prefix='V'){return prefix+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();}
+function genPLU(barcode){return (barcode||'').slice(-4).padStart(4,'0');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function openModal(id){document.getElementById(id).classList.add('open');if(id==='modalTukarPoin')renderTukarPoinList();if(id==='modalBilling'){renderSavedBills();}}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function showAlert(title,msg){document.getElementById('alertTitle').textContent=title;document.getElementById('alertMsg').textContent=msg;openModal('modalAlert');}
+
+window.closeModal = closeModal;
+window.openModal = openModal;
+
+// Dark mode
+function toggleTheme(){
+  const d=document.documentElement;
+  const isDark=d.getAttribute('data-theme')==='dark';
+  d.setAttribute('data-theme',isDark?'light':'dark');
+  document.querySelector('.icon-btn').textContent=isDark?'🌙':'☀️';
+  localStorage.setItem('theme',isDark?'light':'dark');
+}
+window.toggleTheme=toggleTheme;
+if(localStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');document.querySelector('.icon-btn').textContent='☀️';}
+
+// Header menu
+function toggleHeaderMenu(){document.getElementById('headerDropdown').classList.toggle('open');}
+window.toggleHeaderMenu=toggleHeaderMenu;
+document.addEventListener('click',e=>{if(!document.getElementById('headerMenu').contains(e.target))document.getElementById('headerDropdown').classList.remove('open');});
+
+// Navigation
+function navigate(page,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page'+page).classList.add('active');
+  el.classList.add('active');
+  if(page==='Home')renderActiveBillings();
+  if(page==='List')renderCategoryList();
+  if(page==='Pos')renderProducts();
+  if(page==='Admin'){}
+}
+window.navigate=navigate;
+
+// ==============================
+// MEMBER FUNCTIONS
+// ==============================
+async function addMember(){
+  const name=document.getElementById('newMemberName').value.trim();
+  const phone=document.getElementById('newMemberPhone').value.trim();
+  if(!name||!phone){toast('Isi semua field!');return;}
+  const memberId=phone;
+  const snap=await get(ref(db,'members/'+memberId));
+  if(snap.exists()){toast('Member sudah terdaftar!');return;}
+  await set(ref(db,'members/'+memberId),{name,phone,points:0,createdAt:Date.now(),loginDates:{}});
+  toast('Member '+name+' berhasil ditambah!');
+  document.getElementById('newMemberName').value='';
+  document.getElementById('newMemberPhone').value='';
+  closeModal('modalAddMember');
+}
+window.addMember=addMember;
+
+async function getMember(id){
+  const snap=await get(ref(db,'members/'+id));
+  return snap.exists()?{id,...snap.val()}:null;
 }
 
-function formatRp(n) { return 'Rp ' + Number(n||0).toLocaleString('id-ID'); }
-function formatDate(ts) { return ts ? new Date(ts).toLocaleDateString('id-ID') : '-'; }
-function formatDateTime(ts) { return ts ? new Date(ts).toLocaleString('id-ID') : '-'; }
-function genCode() { return Math.random().toString(36).substr(2,8).toUpperCase(); }
-function genPLU(barcode) { return (barcode||'').slice(-4) || Math.floor(1000+Math.random()*9000).toString(); }
+async function cekMemberStatus(){
+  const id=document.getElementById('cekMemberInput').value.trim();
+  if(!id){toast('Masukan No Member!');return;}
+  const m=await getMember(id);
+  const res=document.getElementById('cekMemberResult');
+  if(!m){res.innerHTML='<p style="color:var(--danger)">Member tidak ditemukan</p>';return;}
+  const vouchers=await getMemberVouchers(id);
+  const vList=vouchers.filter(v=>!v.redeemed).map(v=>`<div class="voucher-card" style="margin-bottom:8px;"><div class="voucher-code">${v.code}</div><div style="font-size:.8rem;opacity:.8">${v.description||'Voucher Gratis'}</div></div>`).join('');
+  res.innerHTML=`<div class="card"><div style="font-weight:700;font-size:1.1rem">${m.name}</div><div style="color:var(--text-muted);font-size:.82rem">No: ${m.phone}</div><div style="margin-top:8px;display:flex;gap:10px;"><span class="badge badge-mocha">💎 ${m.points||0} Poin</span><span class="badge badge-success">🎫 ${vouchers.filter(v=>!v.redeemed).length} Voucher</span></div></div>${vList||'<p style="color:var(--text-muted);font-size:.82rem;margin-top:8px">Tidak ada voucher aktif</p>'}`;
+}
+window.cekMemberStatus=cekMemberStatus;
 
-function padTime(n) { return String(n).padStart(2,'0'); }
-function secToStr(sec) {
-  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
-  return `${padTime(h)}:${padTime(m)}:${padTime(s)}`;
+async function getMemberVouchers(memberId){
+  const snap=await get(ref(db,'vouchers/'+memberId));
+  if(!snap.exists())return[];
+  return Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
 }
 
-function showModal(html) {
-  document.getElementById('modal-container').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">${html}</div>`;
-}
-function closeModal() { document.getElementById('modal-container').innerHTML = ''; }
-
-// ============================================================
-// FIREBASE HELPERS
-// ============================================================
-async function dbRead(path) {
-  try {
-    const snap = await window.dbGet(window.dbRef(window.db, path));
-    return snap.exists() ? snap.val() : null;
-  } catch(e) { return null; }
-}
-
-async function dbWrite(path, data) {
-  try { await window.dbSet(window.dbRef(window.db, path), data); return true; }
-  catch(e) { console.error(e); return false; }
+async function addPointsToMember(memberId,points){
+  const m=await getMember(memberId);
+  if(!m)return;
+  const newPoints=(m.points||0)+points;
+  await update(ref(db,'members/'+memberId),{points:newPoints});
+  // Auto voucher every 200 points
+  const prev=Math.floor((m.points||0)/200);
+  const next=Math.floor(newPoints/200);
+  for(let i=prev+1;i<=next;i++){
+    const code=genCode('V');
+    await push(ref(db,'vouchers/'+memberId),{code,description:'Voucher Gratis 1 Jam',createdAt:Date.now(),redeemed:false,source:'auto'});
+  }
 }
 
-async function dbPushData(path, data) {
-  try { const r = await window.dbPush(window.dbRef(window.db, path), data); return r.key; }
-  catch(e) { console.error(e); return null; }
+// Login points for billing
+async function grantLoginPoints(memberId){
+  const today=new Date().toISOString().slice(0,10);
+  const m=await getMember(memberId);
+  if(!m)return;
+  if(m.loginDates&&m.loginDates[today])return; // already granted today
+  await update(ref(db,'members/'+memberId+'/loginDates'),{[today]:true});
+  await addPointsToMember(memberId,10);
+  toast('✨ 10 poin login pertama hari ini untuk '+m.name);
 }
 
-async function dbDel(path) {
-  try { await window.dbRemove(window.dbRef(window.db, path)); return true; }
-  catch(e) { return false; }
+// ==============================
+// VOUCHER REDEEM
+// ==============================
+async function cekVoucherRedeem(){
+  const memberId=document.getElementById('redeemMemberInput').value.trim();
+  const code=document.getElementById('redeemVoucherCode').value.trim().toUpperCase();
+  if(!memberId||!code){toast('Isi semua field!');return;}
+  const m=await getMember(memberId);
+  if(!m){document.getElementById('redeemVoucherResult').innerHTML='<p style="color:var(--danger)">Member tidak ditemukan</p>';return;}
+  const vouchers=await getMemberVouchers(memberId);
+  const v=vouchers.find(x=>x.code.toUpperCase()===code&&!x.redeemed);
+  if(!v){document.getElementById('redeemVoucherResult').innerHTML='<p style="color:var(--danger)">Voucher tidak valid atau sudah digunakan</p>';return;}
+  state.selectedVoucher={memberId,member:m,voucher:v};
+  document.getElementById('confirmRedeemContent').innerHTML=`<div class="voucher-card"><div class="voucher-code">${v.code}</div><div style="opacity:.8;font-size:.85rem">${v.description||'Voucher Gratis'}</div></div><p style="margin-top:10px;color:var(--text-secondary)">Member: <strong>${m.name}</strong></p>`;
+  openModal('modalConfirmRedeem');
+}
+window.cekVoucherRedeem=cekVoucherRedeem;
+
+async function doRedeem(){
+  const {memberId,voucher}=state.selectedVoucher;
+  await update(ref(db,'vouchers/'+memberId+'/'+voucher.key),{redeemed:true,redeemedAt:Date.now()});
+  toast('Voucher berhasil di-redeem!');
+  closeModal('modalConfirmRedeem');
+  closeModal('modalRedeemVoucher');
+  document.getElementById('redeemVoucherResult').innerHTML='';
+  document.getElementById('redeemMemberInput').value='';
+  document.getElementById('redeemVoucherCode').value='';
+}
+window.doRedeem=doRedeem;
+
+// ==============================
+// POIN EXCHANGE
+// ==============================
+async function getPoinExchanges(){
+  const snap=await get(ref(db,'poinExchange'));
+  if(!snap.exists())return[];
+  return Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
 }
 
-function dbListen(path, cb) {
-  window.dbOnValue(window.dbRef(window.db, path), snap => cb(snap.exists() ? snap.val() : {}));
+async function renderTukarPoinList(){
+  const list=await getPoinExchanges();
+  const el=document.getElementById('tukarPoinList');
+  if(!list.length){el.innerHTML='<p style="color:var(--text-muted)">Belum ada item penukaran poin</p>';return;}
+  el.innerHTML=list.map(item=>`<div class="list-item" style="cursor:pointer;border-radius:8px;${state.selectedPoinExchange?.key===item.key?'background:var(--mocha-100);':''}" onclick="selectPoinExchange('${item.key}')"><div style="flex:1"><div style="font-weight:600">${item.name}</div><div style="font-size:.78rem;color:var(--text-muted)">${item.points} poin</div></div><span class="badge badge-mocha">${item.points} pts</span></div>`).join('');
+}
+window.renderTukarPoinList=renderTukarPoinList;
+
+function selectPoinExchange(key){
+  state.selectedPoinExchange=null;
+  getPoinExchanges().then(list=>{state.selectedPoinExchange=list.find(x=>x.key===key);renderTukarPoinList();});
+}
+window.selectPoinExchange=selectPoinExchange;
+
+async function doTukarPoin(){
+  if(!state.selectedPoinExchange){toast('Pilih item penukaran!');return;}
+  const memberId=document.getElementById('tukarPoinMember').value.trim();
+  if(!memberId){toast('Masukan No Member!');return;}
+  const m=await getMember(memberId);
+  if(!m){toast('Member tidak ditemukan!');return;}
+  if((m.points||0)<state.selectedPoinExchange.points){toast('Poin tidak cukup!');return;}
+  await update(ref(db,'members/'+memberId),{points:(m.points||0)-state.selectedPoinExchange.points});
+  await push(ref(db,'poinHistory'),{memberId,memberName:m.name,item:state.selectedPoinExchange.name,points:state.selectedPoinExchange.points,date:Date.now()});
+  toast('Penukaran berhasil!');
+  closeModal('modalTukarPoin');
+  state.selectedPoinExchange=null;
+}
+window.doTukarPoin=doTukarPoin;
+
+// ==============================
+// SAVED BILLING (localStorage)
+// ==============================
+function saveBilling(){
+  const name=document.getElementById('saveBillName').value.trim();
+  const member=document.getElementById('saveBillMember').value.trim();
+  const amount=Number(document.getElementById('saveBillAmount').value)||0;
+  const minutes=Number(document.getElementById('saveBillMinutes').value)||60;
+  if(!name){toast('Isi nama!');return;}
+  const b={id:Date.now(),name,member,amount,minutes,savedAt:Date.now(),expiresAt:Date.now()+minutes*60*1000};
+  state.savedBillings.unshift(b);
+  localStorage.setItem('savedBillings',JSON.stringify(state.savedBillings));
+  toast('Billing disimpan!');
+  renderSavedBills();
+  document.getElementById('saveBillName').value='';
+  document.getElementById('saveBillMember').value='';
+  document.getElementById('saveBillAmount').value='';
+}
+window.saveBilling=saveBilling;
+
+function renderSavedBills(){
+  const now=Date.now();
+  state.savedBillings=state.savedBillings.filter(b=>b.expiresAt>now);
+  localStorage.setItem('savedBillings',JSON.stringify(state.savedBillings));
+  const el=document.getElementById('savedBillsList');
+  if(!state.savedBillings.length){el.innerHTML='<p style="color:var(--text-muted)">Tidak ada billing tersimpan</p>';return;}
+  el.innerHTML=state.savedBillings.map(b=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${b.name}</div><div style="font-size:.78rem;color:var(--text-muted)">Member: ${b.member||'-'} | ${fmtRp(b.amount)}</div><div style="font-size:.72rem;color:var(--text-muted)">Exp: ${fmtDate(b.expiresAt)}</div></div><button class="btn btn-danger btn-sm" onclick="deleteSavedBill(${b.id})">🗑</button></div>`).join('');
+}
+window.renderSavedBills=renderSavedBills;
+
+function deleteSavedBill(id){state.savedBillings=state.savedBillings.filter(b=>b.id!==id);localStorage.setItem('savedBillings',JSON.stringify(state.savedBillings));renderSavedBills();}
+window.deleteSavedBill=deleteSavedBill;
+
+// ==============================
+// BILLING MODAL TABS
+// ==============================
+function switchBillingModalTab(tabId,el){
+  document.querySelectorAll('#modalBilling .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#modalBilling .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  el.classList.add('active');
+}
+window.switchBillingModalTab=switchBillingModalTab;
+
+// ==============================
+// CATEGORIES & BILLING LIST
+// ==============================
+async function getCategories(){
+  const snap=await get(ref(db,'categories'));
+  if(!snap.exists())return[];
+  return Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
 }
 
-// ============================================================
-// INIT LISTENERS
-// ============================================================
-function initListeners() {
-  dbListen('billings', v => { state.billings = v||{}; if(state.page==='home') renderHome(); });
-  dbListen('categories', v => { state.categories = v||{}; });
-  dbListen('members', v => { state.members = v||{}; });
-  dbListen('vouchers', v => { state.vouchers = v||{}; });
-  dbListen('inventory', v => { state.inventory = v||{}; state.posBarang = Object.entries(v||{}).map(([id,d])=>({id,...d})); });
-  dbListen('transactions', v => { state.transactions = v||{}; });
-  dbListen('expenses', v => { state.expenses = v||{}; });
-  dbListen('savedBillings', v => { state.savedBillings = v||{}; if(state.page==='home') renderHome(); });
-  dbListen('settings', v => { if(v) state.settings = {...state.settings, ...v}; });
-  dbListen('activeBillings', v => {
-    state.activeBillings = v||{};
-    // Sync timers
-    Object.entries(state.activeBillings).forEach(([id, b]) => {
-      if(b.status==='running' && !state.timers[id]) {
-        startTimer(id);
-      }
-    });
-    if(state.page==='home') renderHome();
-  });
-}
-
-// ============================================================
-// NAVIGATION
-// ============================================================
-function navigate(page) {
-  state.page = page;
-  state.adminSubPage = null;
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('nav-'+page)?.classList.add('active');
-  render();
-}
-window.navigate = navigate;
-
-function render() {
-  const mc = document.getElementById('main-content');
-  if(state.page==='home') renderHome();
-  else if(state.page==='list') renderList();
-  else if(state.page==='pos') renderPOS();
-  else if(state.page==='admin') renderAdmin();
-}
-
-// ============================================================
-// CLOCK
-// ============================================================
-function updateClock() {
-  document.getElementById('clock').textContent = new Date().toLocaleTimeString('id-ID');
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// ============================================================
-// HOME PAGE
-// ============================================================
-function renderHome() {
-  const mc = document.getElementById('main-content');
-  const actives = Object.entries(state.activeBillings||{}).filter(([,b])=>b.status!=='done');
-  const saved = Object.entries(state.savedBillings||{});
-
-  mc.innerHTML = `
-    <!-- ACTIVE BILLINGS -->
-    <div class="card">
-      <div class="card-title">⏱ Billing Aktif</div>
-      ${actives.length===0 ? '<div style="color:var(--text3);font-size:13px;text-align:center;padding:10px">Belum ada billing aktif</div>' :
-        actives.map(([id, b]) => activeBillingCard(id, b)).join('')
-      }
+async function renderCategoryList(){
+  const cats=await getCategories();
+  const el=document.getElementById('categoryListArea');
+  if(!cats.length){
+    el.innerHTML=`<div class="empty-state"><p>Belum ada kategori</p><p style="font-size:.8rem;margin-top:4px">Tambah di Admin → Billing</p></div>`;
+    return;
+  }
+  el.innerHTML=cats.map(cat=>`
+    <div class="card" style="margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:8px;">${cat.name||'Kategori'}</div>
+      <div class="cat-scroll">${(cat.services||[]).map((svc,si)=>`<button class="cat-btn" onclick="showServicePackages('${cat.key}','${si}')">${svc.name}</button>`).join('')}</div>
     </div>
+  `).join('');
+}
+window.renderCategoryList=renderCategoryList;
 
-    <!-- CEK MEMBER -->
-    <div class="card">
-      <div class="card-title">🎖 Cek Status Member</div>
-      <div class="row">
-        <input id="hm-member-input" placeholder="No HP Member" type="tel">
-        <button class="btn btn-primary" onclick="homeCekMember()" style="white-space:nowrap">Cek</button>
-      </div>
-      <div id="hm-member-result"></div>
-    </div>
+async function showServicePackages(catKey,svcIdx){
+  const snap=await get(ref(db,'categories/'+catKey));
+  if(!snap.exists())return;
+  const cat=snap.val();
+  const svc=cat.services[svcIdx];
+  state.currentPkg={catKey,catName:cat.name,svcIdx,svc};
+  state.currentPkgQty=1;
+  document.getElementById('pkgModalTitle').textContent=cat.name+' — '+svc.name;
+  document.getElementById('pkgMemberInfo').style.display='none';
+  document.getElementById('pkgMemberInput').value='';
+  const pkgList=document.getElementById('pkgList');
+  if(!svc.packages||!svc.packages.length){pkgList.innerHTML='<p style="color:var(--text-muted)">Belum ada paket</p>';openModal('modalPackage');return;}
+  pkgList.innerHTML=svc.packages.map((p,i)=>`<div class="list-item" style="cursor:pointer;border-radius:8px;" onclick="selectPackage(${i})"><div style="flex:1"><div style="font-weight:600">${p.name||'Paket '+i}</div><div style="font-size:.78rem;color:var(--text-muted)">${p.duration} menit</div></div><span style="font-weight:700;color:var(--mocha-700)">${fmtRp(p.price)}</span></div>`).join('');
+  document.getElementById('pkgQtyArea').style.display='none';
+  openModal('modalPackage');
+}
+window.showServicePackages=showServicePackages;
 
-    <!-- REDEEM VOUCHER -->
-    <div class="card">
-      <div class="card-title">🎁 Tukar Voucher</div>
-      <div class="form-group">
-        <label>No Member</label>
-        <input id="rdm-member" placeholder="No HP Member" type="tel">
-      </div>
-      <div class="form-group">
-        <label>Kode Voucher</label>
-        <input id="rdm-code" placeholder="Kode Voucher" style="text-transform:uppercase">
-      </div>
-      <button class="btn btn-primary btn-full" onclick="homePreviewRedeem()">Preview Hadiah</button>
-    </div>
+function selectPackage(idx){
+  const pkgs=state.currentPkg.svc.packages;
+  state.currentPkg.selectedPkg=pkgs[idx];
+  state.currentPkg.pkgIdx=idx;
+  document.querySelectorAll('#pkgList .list-item').forEach((el,i)=>{el.style.background=i===idx?'var(--mocha-100)':'';});
+  document.getElementById('pkgQtyArea').style.display='block';
+  updatePkgTotal();
+}
+window.selectPackage=selectPackage;
 
-    <!-- SIMPAN/AMBIL BILLING -->
-    <div class="card">
-      <div class="card-title">💾 Simpan & Ambil Billing</div>
-      <div class="form-group">
-        <label>Nama</label>
-        <input id="sv-name" placeholder="Nama Customer">
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label>No Member (opt)</label>
-          <input id="sv-member" placeholder="No HP" type="tel">
-        </div>
-        <div class="form-group">
-          <label>Jumlah (menit)</label>
-          <input id="sv-dur" placeholder="60" type="number" min="1">
-        </div>
-      </div>
-      <button class="btn btn-secondary btn-full" onclick="homeSaveBilling()" style="margin-bottom:10px">💾 Simpan</button>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Billing Tersimpan:</div>
-      ${saved.length===0 ? '<div style="color:var(--text3);font-size:12px">Kosong</div>' :
-        saved.map(([id, b]) => `
-          <div class="billing-card">
-            <div class="billing-card-header">
-              <div>
-                <div class="billing-card-name">${b.name}</div>
-                <div class="billing-card-meta">${b.member||'Non-member'} · ${b.duration} mnt · ${formatDateTime(b.createdAt)}</div>
-              </div>
-            </div>
-            <div class="billing-card-actions">
-              <button class="btn btn-primary btn-sm" onclick="homeLoadBilling('${id}')">Ambil</button>
-              <button class="btn btn-danger btn-sm" onclick="homeDeleteSaved('${id}')">Hapus</button>
-            </div>
-          </div>
-        `).join('')
-      }
-    </div>
-  `;
+function changeQty(d){state.currentPkgQty=Math.max(1,state.currentPkgQty+d);document.getElementById('pkgQtyVal').textContent=state.currentPkgQty;updatePkgTotal();}
+window.changeQty=changeQty;
+
+function updatePkgTotal(){
+  const p=state.currentPkg.selectedPkg;
+  if(!p)return;
+  const total=p.price*state.currentPkgQty;
+  document.getElementById('pkgTotalPrice').textContent='Total: '+fmtRp(total);
 }
 
-function activeBillingCard(id, b) {
-  const remaining = b.remaining||0;
-  const total = b.totalSec||1;
-  const pct = Math.max(0, Math.min(100, (remaining/total)*100));
-  const isRunning = b.status==='running';
-  return `
-    <div class="billing-card">
-      <div class="billing-card-header">
-        <div>
-          <div class="billing-card-name">${b.customerName||'Customer'}</div>
-          <div class="billing-card-meta">${b.categoryName||''} · ${b.packageName||''} · ${b.member||'Non-member'}</div>
-        </div>
-        <span class="badge ${isRunning?'badge-green':'badge-yellow'}">${isRunning?'Jalan':'Pause'}</span>
-      </div>
-      <div id="timer-${id}" class="timer-display">${secToStr(remaining)}</div>
-      <div style="background:var(--border);border-radius:4px;height:4px;margin:8px 0">
-        <div style="background:var(--accent);height:4px;border-radius:4px;width:${pct}%;transition:width 1s"></div>
-      </div>
-      <div class="billing-card-actions">
-        ${isRunning
-          ? `<button class="btn btn-secondary btn-sm" onclick="pauseBilling('${id}')">⏸ Pause</button>`
-          : `<button class="btn btn-success btn-sm" onclick="resumeBilling('${id}')">▶ Lanjut</button>`
-        }
-        <button class="btn btn-danger btn-sm" onclick="stopBilling('${id}')">⏹ Selesai</button>
-      </div>
-    </div>
-  `;
+async function cekPkgMember(){
+  const id=document.getElementById('pkgMemberInput').value.trim();
+  if(!id)return;
+  const m=await getMember(id);
+  const el=document.getElementById('pkgMemberInfo');
+  if(!m){el.style.display='block';el.innerHTML='<p style="color:var(--danger)">Member tidak ditemukan</p>';state.currentPkgMember=null;return;}
+  const vouchers=await getMemberVouchers(id);
+  el.style.display='block';
+  el.innerHTML=`<strong>${m.name}</strong><br><span class="badge badge-mocha">💎 ${m.points||0} Poin</span> <span class="badge badge-success">🎫 ${vouchers.filter(v=>!v.redeemed).length} Voucher</span>`;
+  state.currentPkgMember=m;
 }
+window.cekPkgMember=cekPkgMember;
 
-async function homeCekMember() {
-  const no = document.getElementById('hm-member-input').value.trim();
-  if(!no) return toast('Masukan no HP member','error');
-  const m = state.members[no];
-  const res = document.getElementById('hm-member-result');
-  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; return; }
-  const vouchers = Object.entries(state.vouchers||{}).filter(([,v])=>v.member===no && !v.redeemed);
-  res.innerHTML = `
-    <div class="member-info-box" style="margin-top:10px">
-      <div class="member-name">${m.name}</div>
-      <div class="member-stats">
-        <div class="member-stat"><div class="val">${m.points||0}</div><div class="lbl">Poin</div></div>
-        <div class="member-stat"><div class="val">${vouchers.length}</div><div class="lbl">Voucher</div></div>
-      </div>
-      ${vouchers.length>0?`<div style="margin-top:10px">${vouchers.map(([id,v])=>`<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--border)"><span class="badge badge-accent">${v.code}</span> ${v.description||'Voucher Gratis'}</div>`).join('')}</div>`:''}
-    </div>
-  `;
+function startBillingPay(type){
+  if(!state.currentPkg?.selectedPkg){toast('Pilih paket dulu!');return;}
+  state.currentPayType=type;
+  const p=state.currentPkg.selectedPkg;
+  const total=p.price*state.currentPkgQty;
+  document.getElementById('payDetail').innerHTML=`<div class="card"><div>${state.currentPkg.catName} — ${state.currentPkg.svc.name}</div><div style="font-weight:700;margin-top:4px">${p.name} x${state.currentPkgQty} = ${fmtRp(total)}</div><div style="font-size:.8rem;color:var(--text-muted)">Durasi: ${p.duration*state.currentPkgQty} menit | ${type==='cash'?'Tunai':'Non-Tunai'}</div></div>`;
+  document.getElementById('payAmount').value='';
+  document.getElementById('payChange').textContent='';
+  openModal('modalPay');
 }
+window.startBillingPay=startBillingPay;
 
-async function homePreviewRedeem() {
-  const no = document.getElementById('rdm-member').value.trim();
-  const code = document.getElementById('rdm-code').value.trim().toUpperCase();
-  if(!no||!code) return toast('Isi semua field','error');
-  const m = state.members[no];
-  if(!m) return toast('Member tidak ditemukan','error');
-  const vEntry = Object.entries(state.vouchers||{}).find(([,v])=>v.code===code && v.member===no && !v.redeemed);
-  if(!vEntry) return toast('Voucher tidak valid atau sudah digunakan','error');
-  const [vid, v] = vEntry;
-  showModal(`
-    <div class="modal">
-      <div class="modal-header"><div class="modal-title">🎁 Konfirmasi Redeem</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body" style="text-align:center">
-        <div style="font-size:48px;margin-bottom:12px">🎉</div>
-        <div style="font-size:18px;font-weight:700;margin-bottom:6px">${m.name}</div>
-        <div style="color:var(--text2);margin-bottom:12px">Voucher: <strong>${code}</strong></div>
-        <div class="badge badge-green" style="font-size:14px;padding:6px 16px">${v.description||'Voucher Gratis 1 Jam'}</div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
-        <button class="btn btn-primary" onclick="doRedeem('${vid}','${no}')">Redeem!</button>
-      </div>
-    </div>
-  `);
+function calcChange(){
+  const p=state.currentPkg?.selectedPkg;
+  if(!p)return;
+  const total=p.price*state.currentPkgQty;
+  const paid=Number(document.getElementById('payAmount').value)||0;
+  const change=paid-total;
+  document.getElementById('payChange').textContent=change>=0?'Kembalian: '+fmtRp(change):'Kurang: '+fmtRp(-change);
+  document.getElementById('payChange').style.color=change>=0?'var(--success)':'var(--danger)';
 }
+window.calcChange=calcChange;
 
-async function doRedeem(vid, memberNo) {
-  await dbWrite(`vouchers/${vid}/redeemed`, true);
-  await dbWrite(`vouchers/${vid}/redeemedAt`, Date.now());
-  closeModal();
-  toast('Voucher berhasil diredeem!');
+async function confirmPay(){
+  const p=state.currentPkg.selectedPkg;
+  const total=p.price*state.currentPkgQty;
+  const paid=Number(document.getElementById('payAmount').value)||0;
+  if(state.currentPayType==='cash'&&paid<total){toast('Uang kurang!');return;}
+  const dur=p.duration*state.currentPkgQty*60*1000;
+  const id='B'+Date.now();
+  const billing={
+    id,name:state.currentPkg.catName+' - '+state.currentPkg.svc.name,
+    category:state.currentPkg.catName,service:state.currentPkg.svc.name,
+    package:p.name,price:total,duration:dur,
+    startTime:Date.now(),endTime:Date.now()+dur,
+    paused:false,pausedAt:null,remainingMs:dur,
+    payType:state.currentPayType,paid,change:paid-total,
+    memberId:state.currentPkgMember?.id||null,memberName:state.currentPkgMember?.name||null,
+    status:'active'
+  };
+  await set(ref(db,'billings/'+id),billing);
+  // Save revenue
+  await push(ref(db,'revenue'),{type:'billing',category:state.currentPkg.catName,amount:total,payType:state.currentPayType,date:Date.now(),billingId:id});
+  // Grant member points
+  if(state.currentPkgMember){
+    await grantLoginPoints(state.currentPkgMember.id);
+  }
+  toast('Billing dimulai!');
+  closeModal('modalPay');
+  closeModal('modalPackage');
+  navigate('Home',document.querySelector('.nav-item'));
+  renderActiveBillings();
+  renderCategoryList();
 }
-window.doRedeem = doRedeem;
-window.homePreviewRedeem = homePreviewRedeem;
-window.homeCekMember = homeCekMember;
+window.confirmPay=confirmPay;
 
-async function homeSaveBilling() {
-  const name = document.getElementById('sv-name').value.trim();
-  const member = document.getElementById('sv-member').value.trim();
-  const dur = parseInt(document.getElementById('sv-dur').value)||0;
-  if(!name||!dur) return toast('Isi nama dan durasi','error');
-  await dbPushData('savedBillings', { name, member, duration: dur, createdAt: Date.now() });
-  document.getElementById('sv-name').value='';
-  document.getElementById('sv-member').value='';
-  document.getElementById('sv-dur').value='';
-  toast('Billing tersimpan!');
-}
-window.homeSaveBilling = homeSaveBilling;
-
-async function homeLoadBilling(id) {
-  const b = state.savedBillings[id];
-  if(!b) return;
-  document.getElementById('sv-name').value = b.name;
-  document.getElementById('sv-member').value = b.member||'';
-  document.getElementById('sv-dur').value = b.duration||'';
-  await dbDel(`savedBillings/${id}`);
-  toast('Billing diambil');
-}
-window.homeLoadBilling = homeLoadBilling;
-
-async function homeDeleteSaved(id) {
-  await dbDel(`savedBillings/${id}`);
-  toast('Dihapus');
-}
-window.homeDeleteSaved = homeDeleteSaved;
-
-// TIMER LOGIC
-function startTimer(id) {
-  if(state.timers[id]) return;
-  state.timers[id] = setInterval(async () => {
-    const b = state.activeBillings[id];
-    if(!b || b.status!=='running') { clearInterval(state.timers[id]); delete state.timers[id]; return; }
-    const rem = (b.remaining||0) - 1;
-    if(rem <= 0) {
-      clearInterval(state.timers[id]); delete state.timers[id];
-      await dbWrite(`activeBillings/${id}/remaining`, 0);
-      await dbWrite(`activeBillings/${id}/status`, 'done');
-      // Add points for hours played
-      if(b.member) {
-        const hrs = Math.floor((b.totalSec||0)/3600);
-        if(hrs>0) await addPoints(b.member, hrs*2);
-      }
-      toast(`⏰ Waktu habis: ${b.customerName}`);
-    } else {
-      await dbWrite(`activeBillings/${id}/remaining`, rem);
-      state.activeBillings[id] = {...b, remaining: rem};
-      const el = document.getElementById(`timer-${id}`);
-      if(el) el.textContent = secToStr(rem);
-    }
-  }, 1000);
-}
-
-async function pauseBilling(id) {
-  await dbWrite(`activeBillings/${id}/status`, 'paused');
-  clearInterval(state.timers[id]); delete state.timers[id];
-  toast('Billing di-pause');
-}
-window.pauseBilling = pauseBilling;
-
-async function resumeBilling(id) {
-  await dbWrite(`activeBillings/${id}/status`, 'running');
-  startTimer(id);
-  toast('Billing dilanjutkan');
-}
-window.resumeBilling = resumeBilling;
-
-async function stopBilling(id) {
-  clearInterval(state.timers[id]); delete state.timers[id];
-  await dbWrite(`activeBillings/${id}/status`, 'done');
-  toast('Billing selesai');
-}
-window.stopBilling = stopBilling;
-
-// ============================================================
-// LIST PAGE
-// ============================================================
-function renderList() {
-  const mc = document.getElementById('main-content');
-  if(state.listStep==='category') renderListCategory();
-  else if(state.listStep==='type') renderListType();
-  else if(state.listStep==='package') renderListPackage();
-  else if(state.listStep==='member') renderListMember();
-  else if(state.listStep==='payment') renderListPayment();
-}
-
-function renderListCategory() {
-  const mc = document.getElementById('main-content');
-  const cats = Object.entries(state.categories||{});
-  mc.innerHTML = `
-    <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
-      <h2 style="font-family:'Syne',sans-serif;font-size:18px">Pilih Kategori</h2>
-    </div>
-    ${cats.length===0 ? '<div class="card" style="text-align:center;color:var(--text3)">Belum ada kategori. Tambah di Admin > Billing</div>' :
-      `<div class="cat-grid">${cats.map(([id,c])=>`
-        <div class="cat-card" onclick="selectCategory('${id}')">
-          <div class="cat-icon">${c.icon||'🎮'}</div>
-          <div class="cat-name">${c.name}</div>
-        </div>
-      `).join('')}</div>`
-    }
-  `;
-}
-
-function selectCategory(id) {
-  state.listSelectedCategory = id;
-  state.listStep = 'type';
-  renderList();
-}
-window.selectCategory = selectCategory;
-
-function renderListType() {
-  const cat = state.categories[state.listSelectedCategory];
-  if(!cat) { state.listStep='category'; return renderList(); }
-  const types = Object.entries(cat.types||{});
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
-      <button class="btn btn-secondary btn-sm" onclick="state.listStep='category';renderList()">← Kembali</button>
-      <h2 style="font-family:'Syne',sans-serif;font-size:16px">${cat.name}</h2>
-    </div>
-    <div class="card">
-      <div class="card-title">Pilih Jenis</div>
-      ${types.length===0 ? '<div style="color:var(--text3);font-size:13px">Belum ada jenis</div>' :
-        types.map(([tid,t])=>`
-          <div class="list-item" onclick="selectType('${tid}')" style="cursor:pointer">
-            <div class="list-item-info">
-              <div class="list-item-name">${t.name}</div>
-              <div class="list-item-sub">${Object.keys(t.packages||{}).length} paket tersedia</div>
-            </div>
-            <span style="color:var(--accent)">›</span>
-          </div>
-        `).join('')
-      }
-    </div>
-  `;
-}
-window.renderList = renderList;
-
-function selectType(tid) {
-  state.listSelectedType = tid;
-  state.listStep = 'package';
-  renderList();
-}
-window.selectType = selectType;
-
-function renderListPackage() {
-  const cat = state.categories[state.listSelectedCategory];
-  const type = cat?.types?.[state.listSelectedType];
-  if(!type) { state.listStep='type'; return renderList(); }
-  const pkgs = Object.entries(type.packages||{});
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
-      <button class="btn btn-secondary btn-sm" onclick="state.listStep='type';renderList()">← Kembali</button>
-      <h2 style="font-family:'Syne',sans-serif;font-size:16px">${type.name}</h2>
-    </div>
-    <div class="card">
-      <div class="card-title">Pilih Paket</div>
-      ${pkgs.map(([pid,p])=>`
-        <div class="pkg-card ${state.listSelectedPackage===pid?'selected':''}" onclick="selectPackage('${pid}')">
+// ==============================
+// ACTIVE BILLINGS (HOME)
+// ==============================
+function renderActiveBillings(){
+  onValue(ref(db,'billings'),snap=>{
+    const el=document.getElementById('activeBillingList');
+    if(!snap.exists()){el.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Tidak ada billing aktif</p></div>';clearAllTimers();return;}
+    const bills=Object.values(snap.val()).filter(b=>b.status==='active');
+    if(!bills.length){el.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Tidak ada billing aktif</p></div>';clearAllTimers();return;}
+    el.innerHTML=bills.map(b=>`
+      <div class="billing-card ${b.paused?'paused':'active-billing'}" id="bc_${b.id}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
-            <div style="font-weight:600">${p.name}</div>
-            <div style="font-size:12px;color:var(--text2)">${p.duration} · ${formatRp(p.price)}</div>
+            <div class="billing-name"><span class="dot ${b.paused?'dot-orange':'dot-green'}"></span>${b.name}</div>
+            <div class="billing-meta">${b.category} • ${b.package} • ${b.memberName?'👤 '+b.memberName:'Umum'}</div>
+            <div class="billing-meta">Mulai: ${fmtDate(b.startTime)}</div>
+            <div class="billing-meta">Selesai: ${fmtDate(b.endTime)}</div>
           </div>
-          ${state.listSelectedPackage===pid?'<span class="badge badge-accent">✓</span>':''}
+          <div class="billing-timer" id="timer_${b.id}">--:--</div>
         </div>
-      `).join('')}
-    </div>
-    ${state.listSelectedPackage ? `
-      <div class="card">
-        <div class="card-title">Qty Paket</div>
-        <div class="qty-ctrl" style="justify-content:center;margin-bottom:10px">
-          <button class="qty-btn" onclick="state.listQty=Math.max(1,state.listQty-1);renderList()">−</button>
-          <span style="font-size:20px;font-weight:700;min-width:40px;text-align:center">${state.listQty}</span>
-          <button class="qty-btn" onclick="state.listQty++;renderList()">+</button>
+        <div class="billing-actions">
+          <button class="btn ${b.paused?'btn-success':'btn-warning'} btn-sm" onclick="togglePause('${b.id}',${b.paused?'false':'true'})">${b.paused?'▶ Lanjut':'⏸ Pause'}</button>
+          <button class="btn btn-danger btn-sm" onclick="finishBilling('${b.id}')">✓ Selesai</button>
         </div>
-        <button class="btn btn-primary btn-full" onclick="state.listStep='member';renderList()">Lanjut →</button>
       </div>
-    ` : ''}
-  `;
+    `).join('');
+    clearAllTimers();
+    bills.forEach(b=>startTimer(b));
+  },{onlyOnce:true});
 }
 
-function selectPackage(pid) {
-  state.listSelectedPackage = pid;
-  state.listQty = 1;
-  renderList();
-}
-window.selectPackage = selectPackage;
+function clearAllTimers(){Object.values(state.timerIntervals).forEach(clearInterval);state.timerIntervals={};}
 
-function renderListMember() {
-  const cat = state.categories[state.listSelectedCategory];
-  const type = cat?.types?.[state.listSelectedType];
-  const pkg = type?.packages?.[state.listSelectedPackage];
-  const total = (pkg?.price||0) * state.listQty;
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px">
-      <button class="btn btn-secondary btn-sm" onclick="state.listStep='package';renderList()">← Kembali</button>
-      <h2 style="font-family:'Syne',sans-serif;font-size:16px">Data Member</h2>
-    </div>
-    <div class="card">
-      <div class="card-title">Ringkasan</div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${cat?.name}</div><div class="list-item-sub">Kategori</div></div></div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${type?.name}</div><div class="list-item-sub">Jenis</div></div></div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name">${pkg?.name} × ${state.listQty}</div><div class="list-item-sub">Paket</div></div><div style="font-weight:700;color:var(--accent)">${formatRp(total)}</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Member (Opsional)</div>
-      <div class="row">
-        <input id="list-member-no" placeholder="No HP Member" type="tel">
-        <button class="btn btn-secondary" onclick="listCekMember()" style="white-space:nowrap">Cek</button>
-      </div>
-      <div id="list-member-result"></div>
-    </div>
-    <div class="card" style="display:flex;gap:10px">
-      <button class="btn btn-success btn-full" onclick="showListPayment('cash')">💵 Tunai</button>
-      <button class="btn btn-blue btn-full" onclick="showListPayment('noncash')">💳 Non Tunai</button>
-    </div>
-  `;
-}
-
-async function listCekMember() {
-  const no = document.getElementById('list-member-no').value.trim();
-  if(!no) return;
-  const m = state.members[no];
-  const res = document.getElementById('list-member-result');
-  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; state.listMemberInfo=null; return; }
-  state.listMemberInfo = {no, ...m};
-  const vouchers = Object.entries(state.vouchers||{}).filter(([,v])=>v.member===no && !v.redeemed);
-  res.innerHTML = `
-    <div class="member-info-box">
-      <div class="member-name">${m.name}</div>
-      <div class="member-stats">
-        <div class="member-stat"><div class="val">${m.points||0}</div><div class="lbl">Poin</div></div>
-        <div class="member-stat"><div class="val">${vouchers.length}</div><div class="lbl">Voucher</div></div>
-      </div>
-    </div>
-  `;
-}
-window.listCekMember = listCekMember;
-
-function showListPayment(method) {
-  const cat = state.categories[state.listSelectedCategory];
-  const type = cat?.types?.[state.listSelectedType];
-  const pkg = type?.packages?.[state.listSelectedPackage];
-  const total = (pkg?.price||0) * state.listQty;
-  const memberNo = document.getElementById('list-member-no')?.value?.trim()||'';
-  showModal(`
-    <div class="modal">
-      <div class="modal-header"><div class="modal-title">${method==='cash'?'💵 Bayar Tunai':'💳 Non Tunai'}</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body">
-        <div style="text-align:center;margin-bottom:16px">
-          <div style="font-size:28px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</div>
-          <div style="font-size:12px;color:var(--text2)">${pkg?.name} × ${state.listQty}</div>
-        </div>
-        ${method==='cash'?`
-          <div class="form-group">
-            <label>Uang Diterima</label>
-            <input id="pay-nominal" type="number" placeholder="0" oninput="updateKembalian(${total})">
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;padding:8px 0">
-            <span>Kembalian:</span><span id="pay-change" style="font-weight:700;color:var(--green)">Rp 0</span>
-          </div>
-        `:'<div style="text-align:center;color:var(--text2);font-size:13px;margin-bottom:10px">Transfer / QRIS</div>'}
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
-        <button class="btn btn-success" onclick="doListPayment('${method}',${total},'${memberNo}')">✓ Bayar & Mulai</button>
-      </div>
-    </div>
-  `);
-}
-window.showListPayment = showListPayment;
-
-function updateKembalian(total) {
-  const nom = parseInt(document.getElementById('pay-nominal')?.value)||0;
-  const el = document.getElementById('pay-change');
-  if(el) el.textContent = formatRp(Math.max(0, nom-total));
-}
-window.updateKembalian = updateKembalian;
-
-async function doListPayment(method, total, memberNo) {
-  const cat = state.categories[state.listSelectedCategory];
-  const type = cat?.types?.[state.listSelectedType];
-  const pkg = type?.packages?.[state.listSelectedPackage];
-  // Duration in seconds
-  const durationStr = pkg?.duration||'1 jam';
-  let totalSec = parseDuration(durationStr) * state.listQty;
-  const customerName = state.listMemberInfo?.name || 'Guest';
-  const member = memberNo||'';
-
-  // Save transaction
-  await dbPushData('transactions', {
-    type: 'billing',
-    categoryId: state.listSelectedCategory,
-    categoryName: cat?.name,
-    typeId: state.listSelectedType,
-    typeName: type?.name,
-    packageId: state.listSelectedPackage,
-    packageName: pkg?.name,
-    qty: state.listQty,
-    total,
-    paymentMethod: method,
-    member,
-    customerName,
-    createdAt: Date.now()
-  });
-
-  // Create active billing
-  const bKey = await dbPushData('activeBillings', {
-    customerName,
-    categoryName: cat?.name,
-    packageName: pkg?.name,
-    member,
-    totalSec,
-    remaining: totalSec,
-    status: 'running',
-    startedAt: Date.now()
-  });
-
-  // Member points: 10 poin login pertama hari ini
-  if(member && state.members[member]) {
-    const today = new Date().toDateString();
-    const m = state.members[member];
-    if(m.lastLogin !== today) {
-      await addPoints(member, 10);
-      await dbWrite(`members/${member}/lastLogin`, today);
-    }
-    // Check voucher milestone
-    await checkVoucherMilestone(member);
+function startTimer(b){
+  if(state.timerIntervals[b.id])clearInterval(state.timerIntervals[b.id]);
+  function tick(){
+    const el=document.getElementById('timer_'+b.id);
+    if(!el){clearInterval(state.timerIntervals[b.id]);return;}
+    if(b.paused){el.textContent='PAUSED';return;}
+    const now=Date.now();
+    const rem=b.endTime-now;
+    if(rem<=0){el.textContent='00:00';finishBilling(b.id);return;}
+    const h=Math.floor(rem/3600000);
+    const m=Math.floor((rem%3600000)/60000);
+    const s=Math.floor((rem%60000)/1000);
+    el.textContent=(h>0?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   }
-
-  closeModal();
-  // Reset list state
-  state.listStep='category'; state.listSelectedCategory=null; state.listSelectedType=null;
-  state.listSelectedPackage=null; state.listQty=1; state.listMemberInfo=null;
-  navigate('home');
-  toast('Billing dimulai! ⏱');
-}
-window.doListPayment = doListPayment;
-
-function parseDuration(str) {
-  // e.g. "1 jam", "30 menit", "2 jam"
-  const h = str.match(/(\d+)\s*jam/i);
-  const m = str.match(/(\d+)\s*menit/i);
-  return ((h?parseInt(h[1]):0)*3600) + ((m?parseInt(m[1]):0)*60) || 3600;
+  tick();
+  state.timerIntervals[b.id]=setInterval(tick,1000);
 }
 
-// ============================================================
-// POS PAGE
-// ============================================================
-function renderPOS() {
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    <div class="tabs">
-      <button class="tab ${state.posTab==='cart'?'active':''}" onclick="state.posTab='cart';renderPOS()">🛒 Keranjang (${state.posCart.length})</button>
-      <button class="tab ${state.posTab==='items'?'active':''}" onclick="state.posTab='items';renderPOS()">📦 Barang</button>
-    </div>
-    ${state.posTab==='cart' ? renderPOSCart() : renderPOSItems()}
-  `;
-}
-
-function renderPOSItems() {
-  const items = Object.entries(state.inventory||{});
-  return `
-    <div style="margin-bottom:10px">
-      <input id="pos-search" placeholder="Cari nama / barcode / PLU..." oninput="renderPOS()" value="${window._posSearch||''}">
-    </div>
-    <div>
-      ${items.filter(([,i])=>{
-        const q = (document.getElementById('pos-search')?.value||window._posSearch||'').toLowerCase();
-        return !q || i.name?.toLowerCase().includes(q) || (i.barcode||'').includes(q) || (i.plu||'').includes(q);
-      }).map(([id,item])=>`
-        <div class="list-item">
-          <div class="list-item-info">
-            <div class="list-item-name">${item.name}</div>
-            <div class="list-item-sub">PLU: ${item.plu||'-'} · ${formatRp(item.sellingPrice)}</div>
-          </div>
-          <button class="btn btn-primary btn-sm" onclick="posAddToCart('${id}')">+ Tambah</button>
-        </div>
-      `).join('') || '<div style="color:var(--text3);text-align:center;padding:20px">Tidak ada barang</div>'}
-    </div>
-  `;
-}
-
-function posAddToCart(id) {
-  const item = state.inventory[id];
-  if(!item) return;
-  const existing = state.posCart.find(c=>c.id===id);
-  if(existing) existing.qty++;
-  else state.posCart.push({id, name:item.name, price:item.sellingPrice, qty:1});
-  renderPOS();
-  toast(`${item.name} ditambahkan`);
-}
-window.posAddToCart = posAddToCart;
-
-function renderPOSCart() {
-  const total = state.posCart.reduce((s,i)=>s+(i.price*i.qty),0);
-  return `
-    ${state.posCart.length===0 ? '<div style="text-align:center;padding:40px;color:var(--text3)">Keranjang kosong<br><br><button class="btn btn-secondary btn-sm" onclick="state.posTab=\'items\';renderPOS()">Tambah Barang</button></div>' : `
-      <div class="card">
-        ${state.posCart.map((item,idx)=>`
-          <div class="cart-item">
-            <div class="cart-item-info">
-              <div style="font-size:14px;font-weight:500">${item.name}</div>
-              <div style="font-size:12px;color:var(--text2)">${formatRp(item.price)} × ${item.qty} = ${formatRp(item.price*item.qty)}</div>
-            </div>
-            <div class="qty-ctrl">
-              <button class="qty-btn" onclick="posQty(${idx},-1)">−</button>
-              <span style="min-width:24px;text-align:center">${item.qty}</span>
-              <button class="qty-btn" onclick="posQty(${idx},1)">+</button>
-              <button class="btn-icon" onclick="posRemove(${idx})">🗑</button>
-            </div>
-          </div>
-        `).join('')}
-        <div style="padding-top:10px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-family:'Syne',sans-serif;font-weight:700">Total</span>
-          <span style="font-size:20px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</span>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-title">Member (Opsional)</div>
-        <div class="row">
-          <input id="pos-member-no" placeholder="No HP Member" type="tel">
-          <button class="btn btn-secondary" onclick="posCekMember()" style="white-space:nowrap">Cek</button>
-        </div>
-        <div id="pos-member-result"></div>
-      </div>
-      <div style="display:flex;gap:10px">
-        <button class="btn btn-success btn-full" onclick="showPOSPayment('cash',${total})">💵 Tunai</button>
-        <button class="btn btn-blue btn-full" onclick="showPOSPayment('noncash',${total})">💳 Non Tunai</button>
-      </div>
-    `}
-  `;
-}
-
-function posQty(idx, delta) {
-  state.posCart[idx].qty += delta;
-  if(state.posCart[idx].qty<=0) state.posCart.splice(idx,1);
-  renderPOS();
-}
-window.posQty = posQty;
-
-function posRemove(idx) { state.posCart.splice(idx,1); renderPOS(); }
-window.posRemove = posRemove;
-
-async function posCekMember() {
-  const no = document.getElementById('pos-member-no').value.trim();
-  if(!no) return;
-  const m = state.members[no];
-  const res = document.getElementById('pos-member-result');
-  if(!m) { res.innerHTML = '<div style="color:var(--red);font-size:13px;margin-top:8px">Member tidak ditemukan</div>'; state.posMemberInfo=null; return; }
-  state.posMemberInfo = {no,...m};
-  res.innerHTML = `<div class="member-info-box"><div class="member-name">${m.name}</div><div style="font-size:12px;color:var(--text2)">Poin: ${m.points||0}</div></div>`;
-}
-window.posCekMember = posCekMember;
-
-function showPOSPayment(method, total) {
-  showModal(`
-    <div class="modal">
-      <div class="modal-header"><div class="modal-title">${method==='cash'?'💵 Bayar Tunai':'💳 Non Tunai'}</div><button class="btn-icon" onclick="closeModal()">✕</button></div>
-      <div class="modal-body">
-        <div style="text-align:center;margin-bottom:16px">
-          <div style="font-size:28px;font-weight:800;color:var(--accent);font-family:'Syne',sans-serif">${formatRp(total)}</div>
-        </div>
-        ${method==='cash'?`
-          <div class="form-group">
-            <label>Uang Diterima</label>
-            <input id="pos-pay-nominal" type="number" placeholder="0" oninput="updatePOSChange(${total})">
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;padding:8px 0">
-            <span>Kembalian:</span><span id="pos-pay-change" style="font-weight:700;color:var(--green)">Rp 0</span>
-          </div>
-        `:'<div style="text-align:center;color:var(--text2);font-size:13px;margin-bottom:10px">Transfer / QRIS</div>'}
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()">Batal</button>
-        <button class="btn btn-success" onclick="doPOSPayment('${method}',${total})">✓ Selesai</button>
-      </div>
-    </div>
-  `);
-}
-window.showPOSPayment = showPOSPayment;
-
-function updatePOSChange(total) {
-  const nom = parseInt(document.getElementById('pos-pay-nominal')?.value)||0;
-  const el = document.getElementById('pos-pay-change');
-  if(el) el.textContent = formatRp(Math.max(0, nom-total));
-}
-window.updatePOSChange = updatePOSChange;
-
-async function doPOSPayment(method, total) {
-  const memberNo = state.posMemberInfo?.no||'';
-  await dbPushData('transactions', {
-    type: 'pos',
-    items: state.posCart,
-    total,
-    paymentMethod: method,
-    member: memberNo,
-    createdAt: Date.now()
-  });
-  // Points: 1 per 1000
-  if(memberNo && state.members[memberNo]) {
-    const pts = Math.floor(total/1000);
-    if(pts>0) await addPoints(memberNo, pts);
-    await checkVoucherMilestone(memberNo);
-  }
-  state.posCart = []; state.posMemberInfo = null;
-  closeModal();
-  renderPOS();
-  toast('Transaksi berhasil!');
-}
-window.doPOSPayment = doPOSPayment;
-
-// ============================================================
-// ADMIN PAGE
-// ============================================================
-function renderAdmin() {
-  const mc = document.getElementById('main-content');
-  if(!state.adminLoggedIn) { renderAdminLogin(); return; }
-  if(state.adminSubPage) { renderAdminSub(); return; }
-  mc.innerHTML = `
-    <h2 style="font-family:'Syne',sans-serif;margin-bottom:16px">Menu Admin</h2>
-    <div class="admin-menu-grid">
-      ${[
-        {key:'dashboard',icon:'📊',name:'Dashboard'},
-        {key:'achievement',icon:'🏆',name:'Achievement'},
-        {key:'member',icon:'👥',name:'Member'},
-        {key:'billing-admin',icon:'⏱',name:'Billing'},
-        {key:'inventory',icon:'📦',name:'Inventory'},
-        {key:'expenses',icon:'💸',name:'Pengeluaran'},
-        {key:'setup',icon:'⚙️',name:'Setup'},
-      ].map(m=>`
-        <div class="admin-menu-item" onclick="goAdminSub('${m.key}')">
-          <div class="icon">${m.icon}</div>
-          <div class="name">${m.name}</div>
-        </div>
-      `).join('')}
-    </div>
-    <button class="btn btn-secondary btn-full" style="margin-top:16px" onclick="state.adminLoggedIn=false;renderAdmin()">Logout</button>
-  `;
-}
-
-function renderAdminLogin() {
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    <div style="max-width:320px;margin:60px auto">
-      <div style="text-align:center;margin-bottom:24px">
-        <div style="font-size:48px">🔐</div>
-        <h2 style="font-family:'Syne',sans-serif;font-size:22px;margin-top:8px">Admin Panel</h2>
-      </div>
-      <div class="card">
-        <div class="form-group">
-          <label>PIN</label>
-          <input type="password" id="admin-pin" placeholder="Masukan PIN" maxlength="8" style="text-align:center;font-size:24px;letter-spacing:8px">
-        </div>
-        <button class="btn btn-primary btn-full" onclick="doAdminLogin()">Masuk</button>
-      </div>
-    </div>
-  `;
-}
-
-function doAdminLogin() {
-  const pin = document.getElementById('admin-pin').value;
-  if(pin === (state.settings.pin||'1234')) {
-    state.adminLoggedIn = true;
-    renderAdmin();
+async function togglePause(id,pauseVal){
+  const snap=await get(ref(db,'billings/'+id));
+  if(!snap.exists())return;
+  const b=snap.val();
+  if(pauseVal==='true'||pauseVal===true){
+    // Pause: record remaining
+    const rem=b.endTime-Date.now();
+    await update(ref(db,'billings/'+id),{paused:true,pausedAt:Date.now(),remainingMs:rem});
   } else {
-    toast('PIN salah','error');
+    // Resume: set new endTime
+    const newEnd=Date.now()+(b.remainingMs||0);
+    await update(ref(db,'billings/'+id),{paused:false,pausedAt:null,endTime:newEnd});
+  }
+  renderActiveBillings();
+}
+window.togglePause=togglePause;
+
+function pauseAll(){
+  get(ref(db,'billings')).then(snap=>{
+    if(!snap.exists())return;
+    Object.values(snap.val()).filter(b=>b.status==='active'&&!b.paused).forEach(b=>togglePause(b.id,true));
+  });
+}
+window.pauseAll=pauseAll;
+
+async function finishBilling(id){
+  const snap=await get(ref(db,'billings/'+id));
+  if(!snap.exists())return;
+  const b=snap.val();
+  // Grant hourly points if member
+  if(b.memberId){
+    const hours=Math.floor((b.price)/(b.price/((b.duration/3600000)||1)));
+    const playHours=Math.floor(b.duration/3600000);
+    if(playHours>0)await addPointsToMember(b.memberId,playHours);
+  }
+  await update(ref(db,'billings/'+id),{status:'done',endedAt:Date.now()});
+  // Save to local history
+  const hist=JSON.parse(localStorage.getItem('billingHistory')||'[]');
+  hist.unshift({...b,status:'done',endedAt:Date.now()});
+  localStorage.setItem('billingHistory',JSON.stringify(hist.slice(0,100)));
+  toast('Billing selesai!');
+  renderActiveBillings();
+}
+window.finishBilling=finishBilling;
+
+// ==============================
+// POS
+// ==============================
+async function renderProducts(){
+  const snap=await get(ref(db,'inventory'));
+  const el=document.getElementById('productGrid');
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted);grid-column:span 2;">Belum ada produk</p>';return;}
+  const items=Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
+  window._allProducts=items;
+  renderProductGrid(items);
+  renderHistoryPos();
+}
+
+function renderProductGrid(items){
+  const el=document.getElementById('productGrid');
+  el.innerHTML=items.map(p=>`<div class="product-card" onclick="addToCart('${p.key}')"><div style="font-size:.75rem;color:var(--text-muted)">${p.plu||''}</div><div style="font-weight:700;font-size:.9rem;margin:2px 0;">${p.name}</div><div style="font-weight:700;color:var(--mocha-700)">${fmtRp(p.sellPrice||0)}</div></div>`).join('');
+}
+
+function filterProducts(){
+  const q=document.getElementById('productSearch').value.toLowerCase();
+  if(!window._allProducts)return;
+  const filtered=window._allProducts.filter(p=>p.name?.toLowerCase().includes(q)||p.barcode?.toLowerCase().includes(q)||p.plu?.toLowerCase().includes(q));
+  renderProductGrid(filtered);
+}
+window.filterProducts=filterProducts;
+
+function addToCart(key){
+  const p=window._allProducts.find(x=>x.key===key);
+  if(!p)return;
+  const existing=state.cart.find(x=>x.key===key);
+  if(existing){existing.qty++;} else {state.cart.push({...p,qty:1});}
+  renderCart();
+  switchPosTab('tabCart',document.querySelector('.tab'));
+}
+window.addToCart=addToCart;
+
+function renderCart(){
+  const el=document.getElementById('cartItems');
+  const summary=document.getElementById('cartSummary');
+  if(!state.cart.length){el.innerHTML='<div class="empty-state"><p>Keranjang kosong</p></div>';summary.style.display='none';return;}
+  const total=state.cart.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  el.innerHTML=state.cart.map((item,i)=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${item.name}</div><div style="font-size:.78rem;color:var(--text-muted)">${fmtRp(item.sellPrice)} /pcs</div></div><div class="qty-control"><button class="qty-btn" onclick="cartQty(${i},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="cartQty(${i},1)">+</button></div><div style="font-weight:700;min-width:60px;text-align:right">${fmtRp(item.sellPrice*item.qty)}</div><button class="btn btn-danger btn-sm" onclick="removeCart(${i})" style="margin-left:6px;">🗑</button></div>`).join('');
+  document.getElementById('cartTotal').textContent=fmtRp(total);
+  summary.style.display='block';
+}
+
+function cartQty(i,d){state.cart[i].qty=Math.max(1,state.cart[i].qty+d);renderCart();}
+window.cartQty=cartQty;
+function removeCart(i){state.cart.splice(i,1);renderCart();}
+window.removeCart=removeCart;
+
+async function cekPosMember(){
+  const id=document.getElementById('posMemberInput').value.trim();
+  if(!id)return;
+  const m=await getMember(id);
+  const el=document.getElementById('posMemberInfo');
+  if(!m){el.style.display='block';el.innerHTML='<p style="color:var(--danger)">Member tidak ditemukan</p>';state.currentPosMember=null;return;}
+  const vouchers=await getMemberVouchers(id);
+  el.style.display='block';
+  el.innerHTML=`<strong>${m.name}</strong> <span class="badge badge-mocha">💎 ${m.points||0} Poin</span> <span class="badge badge-success">🎫 ${vouchers.filter(v=>!v.redeemed).length} Voucher</span>`;
+  state.currentPosMember=m;
+}
+window.cekPosMember=cekPosMember;
+
+function openPayModal(type){
+  if(!state.cart.length){toast('Keranjang kosong!');return;}
+  state.posPayType=type;
+  const total=state.cart.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  document.getElementById('posPayDetail').innerHTML=`<div class="card"><div style="font-weight:700">${fmtRp(total)}</div><div style="font-size:.8rem;color:var(--text-muted)">${state.cart.length} item • ${type==='cash'?'Tunai':'Non-Tunai'}</div></div>`;
+  document.getElementById('posPayAmount').value='';
+  document.getElementById('posPayChange').textContent='';
+  openModal('modalPosPay');
+}
+window.openPayModal=openPayModal;
+
+function calcPosChange(){
+  const total=state.cart.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const paid=Number(document.getElementById('posPayAmount').value)||0;
+  const change=paid-total;
+  document.getElementById('posPayChange').textContent=change>=0?'Kembalian: '+fmtRp(change):'Kurang: '+fmtRp(-change);
+  document.getElementById('posPayChange').style.color=change>=0?'var(--success)':'var(--danger)';
+}
+window.calcPosChange=calcPosChange;
+
+async function confirmPosPay(){
+  const total=state.cart.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const paid=Number(document.getElementById('posPayAmount').value)||0;
+  if(state.posPayType==='cash'&&paid<total){toast('Uang kurang!');return;}
+  // Add points to member (1 point per 1000)
+  const pointsEarned=Math.floor(total/1000);
+  if(state.currentPosMember&&pointsEarned>0){
+    await addPointsToMember(state.currentPosMember.id,pointsEarned);
+  }
+  const tx={items:state.cart.map(x=>({name:x.name,qty:x.qty,price:x.sellPrice,subtotal:x.sellPrice*x.qty})),total,paid,change:paid-total,payType:state.posPayType,memberId:state.currentPosMember?.id||null,memberName:state.currentPosMember?.name||null,points:pointsEarned,date:Date.now()};
+  await push(ref(db,'transactions'),tx);
+  await push(ref(db,'revenue'),{type:'pos',amount:total,payType:state.posPayType,date:Date.now()});
+  // Save to local for quick history
+  const hist=JSON.parse(localStorage.getItem('posHistory')||'[]');
+  hist.unshift(tx);
+  localStorage.setItem('posHistory',JSON.stringify(hist.slice(0,100)));
+  toast('Transaksi berhasil! Poin: '+pointsEarned);
+  state.cart=[];
+  state.currentPosMember=null;
+  document.getElementById('posMemberInput').value='';
+  document.getElementById('posMemberInfo').style.display='none';
+  closeModal('modalPosPay');
+  renderCart();
+  renderHistoryPos();
+}
+window.confirmPosPay=confirmPosPay;
+
+function renderHistoryPos(){
+  const hist=JSON.parse(localStorage.getItem('posHistory')||'[]');
+  const today=new Date().toDateString();
+  const todayHist=hist.filter(tx=>new Date(tx.date).toDateString()===today);
+  const el=document.getElementById('historyPosList');
+  if(!todayHist.length){el.innerHTML='<div class="empty-state"><p>Belum ada transaksi hari ini</p></div>';return;}
+  el.innerHTML=todayHist.map(tx=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div style="font-weight:700">${fmtRp(tx.total)}</div><div style="font-size:.75rem;color:var(--text-muted)">${fmtDate(tx.date)} • ${tx.payType==='cash'?'Tunai':'Non-Tunai'}</div>${tx.memberName?`<div style="font-size:.75rem">👤 ${tx.memberName} (+${tx.points} poin)</div>`:''}</div><span class="badge badge-success">Kembalian: ${fmtRp(tx.change)}</span></div><div style="margin-top:8px;font-size:.78rem;color:var(--text-muted);">${tx.items.map(i=>`${i.name} x${i.qty} = ${fmtRp(i.subtotal)}`).join(' | ')}</div></div>`).join('');
+}
+
+function switchPosTab(tabId,el){
+  document.querySelectorAll('#pagePos .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#pagePos .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  // Fix: find clicked tab element
+  document.querySelectorAll('#pagePos .tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes(tabId))t.classList.add('active');});
+  if(tabId==='tabHistoryPos')renderHistoryPos();
+  if(tabId==='tabProducts')renderProducts();
+}
+window.switchPosTab=switchPosTab;
+
+// ==============================
+// ADMIN
+// ==============================
+let pinBuffer='';
+function pinInput(d){
+  if(pinBuffer.length>=4)return;
+  pinBuffer+=d;
+  updatePinDots();
+}
+function pinClear(){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();}
+function updatePinDots(){
+  document.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled',i<pinBuffer.length));
+}
+function pinSubmit(){
+  if(pinBuffer===state.adminPin){
+    state.adminLoggedIn=true;
+    document.getElementById('adminLoginArea').style.display='none';
+    document.getElementById('adminPanelArea').style.display='block';
+    switchAdminMenu('dashboard',document.querySelector('#adminMenuScroll .cat-btn'));
+  } else {
+    toast('PIN salah!');
+    pinBuffer='';
+    updatePinDots();
   }
 }
-window.doAdminLogin = doAdminLogin;
-
-function goAdminSub(key) { state.adminSubPage = key; renderAdminSub(); }
-window.goAdminSub = goAdminSub;
-
-function backToAdmin() { state.adminSubPage=null; renderAdmin(); }
-window.backToAdmin = backToAdmin;
-
-function renderAdminSub() {
-  const sub = state.adminSubPage;
-  if(sub==='dashboard') renderDashboard();
-  else if(sub==='achievement') renderAchievement();
-  else if(sub==='member') renderMemberAdmin();
-  else if(sub==='billing-admin') renderBillingAdmin();
-  else if(sub==='inventory') renderInventoryAdmin();
-  else if(sub==='expenses') renderExpenses();
-  else if(sub==='setup') renderSetup();
+function adminLogout(){
+  state.adminLoggedIn=false;
+  pinBuffer='';
+  document.getElementById('adminLoginArea').style.display='block';
+  document.getElementById('adminPanelArea').style.display='none';
+  updatePinDots();
 }
+window.pinInput=pinInput;window.pinClear=pinClear;window.pinSubmit=pinSubmit;window.adminLogout=adminLogout;
 
-function adminHeader(title) {
-  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-    <button class="btn btn-secondary btn-sm" onclick="backToAdmin()">← Back</button>
-    <h2 style="font-family:'Syne',sans-serif;font-size:16px">${title}</h2>
-  </div>`;
+function switchAdminMenu(menu,el){
+  document.querySelectorAll('#adminMenuScroll .cat-btn').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  renderAdminContent(menu);
+}
+window.switchAdminMenu=switchAdminMenu;
+
+async function renderAdminContent(menu){
+  const el=document.getElementById('adminContent');
+  el.innerHTML='<p style="color:var(--text-muted)">Loading...</p>';
+  if(menu==='dashboard')await renderDashboard(el);
+  else if(menu==='achievement')await renderAchievement(el);
+  else if(menu==='member')await renderMemberAdmin(el);
+  else if(menu==='billing')await renderBillingAdmin(el);
+  else if(menu==='inventory')await renderInventoryAdmin(el);
+  else if(menu==='expense')await renderExpenseAdmin(el);
+  else if(menu==='historyposAdmin')await renderHistoryPosAdmin(el);
+  else if(menu==='historyBilling')await renderHistoryBillingAdmin(el);
+  else if(menu==='setup')await renderSetupAdmin(el);
 }
 
 // DASHBOARD
-function renderDashboard() {
-  const mc = document.getElementById('main-content');
-  const txns = Object.values(state.transactions||{});
-  const exps = Object.values(state.expenses||{});
-  const [dateFrom, dateTo] = getFilterDates();
-
-  const filtered = txns.filter(t=>filterByDate(t.createdAt, dateFrom, dateTo));
-  const billingTxns = filtered.filter(t=>t.type==='billing');
-  const posTxns = filtered.filter(t=>t.type==='pos');
-  const totalBilling = billingTxns.reduce((s,t)=>s+t.total,0);
-  const totalPOS = posTxns.reduce((s,t)=>s+t.total,0);
-  const totalRevenue = totalBilling + totalPOS;
-  const totalExp = exps.filter(e=>filterByDate(e.createdAt,dateFrom,dateTo)).reduce((s,e)=>s+e.amount,0);
-  const cashBilling = billingTxns.filter(t=>t.paymentMethod==='cash').reduce((s,t)=>s+t.total,0);
-  const noncashBilling = billingTxns.filter(t=>t.paymentMethod==='noncash').reduce((s,t)=>s+t.total,0);
-  const cashPOS = posTxns.filter(t=>t.paymentMethod==='cash').reduce((s,t)=>s+t.total,0);
-  const noncashPOS = posTxns.filter(t=>t.paymentMethod==='noncash').reduce((s,t)=>s+t.total,0);
-
-  // Category breakdown
-  const catBreakdown = {};
-  billingTxns.forEach(t=>{
-    if(!catBreakdown[t.categoryName]) catBreakdown[t.categoryName]={total:0,cash:0,noncash:0,hours:0};
-    catBreakdown[t.categoryName].total += t.total;
-    catBreakdown[t.categoryName][t.paymentMethod==='cash'?'cash':'noncash'] += t.total;
-    const pkg = state.categories[t.categoryId]?.types?.[t.typeId]?.packages?.[t.packageId];
-    if(pkg) catBreakdown[t.categoryName].hours += parseDuration(pkg.duration||'1 jam')*(t.qty||1)/3600;
-  });
-
-  mc.innerHTML = `
-    ${adminHeader('📊 Dashboard')}
-    <div class="card">
-      <div class="card-title">Filter Tanggal</div>
-      <div class="row">
-        <div class="form-group"><label>Dari</label><input type="date" id="dash-from" value="${dateFrom}"></div>
-        <div class="form-group"><label>Sampai</label><input type="date" id="dash-to" value="${dateTo}"></div>
+async function renderDashboard(el){
+  const now=Date.now();
+  const d1=document.createElement('div');
+  d1.innerHTML=`
+    <div style="margin-bottom:12px;">
+      <div class="section-title">Filter Tanggal</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="date" id="dashFrom" style="flex:1;min-width:130px;" value="${new Date(now-7*86400000).toISOString().slice(0,10)}"/>
+        <input type="date" id="dashTo" style="flex:1;min-width:130px;" value="${new Date(now).toISOString().slice(0,10)}"/>
+        <button class="btn btn-primary btn-sm" onclick="loadDashboard()">Tampilkan</button>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="renderDashboard()">Tampilkan</button>
     </div>
-    <div class="stat-grid">
-      <div class="stat-box"><div class="val">${formatRp(totalRevenue)}</div><div class="lbl">Total Pendapatan</div></div>
-      <div class="stat-box"><div class="val">${formatRp(totalExp)}</div><div class="lbl">Total Pengeluaran</div></div>
-      <div class="stat-box"><div class="val">${formatRp(totalRevenue-totalExp)}</div><div class="lbl">Saldo Bersih</div></div>
+    <div id="dashboardStats"></div>
+  `;
+  el.innerHTML='';
+  el.appendChild(d1);
+  loadDashboard();
+}
+
+async function loadDashboard(){
+  const from=new Date(document.getElementById('dashFrom')?.value||'2020-01-01').getTime();
+  const to=new Date(document.getElementById('dashTo')?.value||new Date().toISOString().slice(0,10)).getTime()+86399999;
+  const revSnap=await get(ref(db,'revenue'));
+  const expSnap=await get(ref(db,'expenses'));
+  const revenues=revSnap.exists()?Object.values(revSnap.val()).filter(r=>r.date>=from&&r.date<=to):[];
+  const expenses=expSnap.exists()?Object.values(expSnap.val()).filter(e=>e.date>=from&&e.date<=to):[];
+  const totalRev=revenues.reduce((s,r)=>s+r.amount,0);
+  const totalExp=expenses.reduce((s,e)=>s+e.amount,0);
+  const billingRev=revenues.filter(r=>r.type==='billing');
+  const posRev=revenues.filter(r=>r.type==='pos');
+  const billingCats={};
+  billingRev.forEach(r=>{if(!billingCats[r.category])billingCats[r.category]={cash:0,noncash:0,total:0};billingCats[r.category][r.payType==='cash'?'cash':'noncash']+=r.amount;billingCats[r.category].total+=r.amount;});
+  const posCash=posRev.filter(r=>r.payType==='cash').reduce((s,r)=>s+r.amount,0);
+  const posNonCash=posRev.filter(r=>r.payType!=='cash').reduce((s,r)=>s+r.amount,0);
+  const posTotal=posRev.reduce((s,r)=>s+r.amount,0);
+  const el=document.getElementById('dashboardStats');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="grid-3" style="margin-bottom:12px;">
+      <div class="stat-card"><div class="stat-label">Total Pendapatan</div><div class="stat-val">${fmtRp(totalRev)}</div></div>
+      <div class="stat-card"><div class="stat-label">Total Pengeluaran</div><div class="stat-val" style="color:var(--danger)">${fmtRp(totalExp)}</div></div>
+      <div class="stat-card"><div class="stat-label">TOTAL SISA</div><div class="stat-val" style="color:${totalRev-totalExp>=0?'var(--success)':'var(--danger)'}">${fmtRp(totalRev-totalExp)}</div></div>
     </div>
-    <div class="card">
-      <div class="card-title">Pendapatan Billing per Kategori</div>
-      ${Object.entries(catBreakdown).length===0?'<div style="color:var(--text3);font-size:13px">Belum ada data</div>':
-        Object.entries(catBreakdown).map(([cat,d])=>`
-          <div class="list-item">
-            <div class="list-item-info">
-              <div class="list-item-name">${cat}</div>
-              <div class="list-item-sub">Tunai: ${formatRp(d.cash)} · Non-tunai: ${formatRp(d.noncash)} · ${d.hours.toFixed(1)} jam</div>
-            </div>
-            <div style="font-weight:700;color:var(--accent)">${formatRp(d.total)}</div>
-          </div>
-        `).join('')
-      }
-    </div>
-    <div class="card">
-      <div class="card-title">Pendapatan POS</div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name">Tunai</div></div><div style="color:var(--green)">${formatRp(cashPOS)}</div></div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name">Non Tunai</div></div><div style="color:var(--blue)">${formatRp(noncashPOS)}</div></div>
-      <div class="list-item"><div class="list-item-info"><div class="list-item-name"><strong>Keuntungan Bersih POS</strong></div></div><div style="color:var(--accent);font-weight:700">${formatRp(totalPOS - calcCOGS(posTxns))}</div></div>
-    </div>
-    <div class="card">
-      <div class="card-title">Rincian Transaksi</div>
-      ${filtered.slice().reverse().slice(0,20).map(t=>`
-        <div class="list-item">
-          <div class="list-item-info">
-            <div class="list-item-name">${t.type==='billing'?(t.categoryName+' · '+t.packageName):(t.items?.map(i=>i.name).join(', '))}</div>
-            <div class="list-item-sub">${formatDateTime(t.createdAt)} · ${t.member||'Non-member'} · <span class="badge ${t.paymentMethod==='cash'?'badge-green':'badge-blue'}">${t.paymentMethod}</span></div>
-          </div>
-          <div style="font-weight:600">${formatRp(t.total)}</div>
-        </div>
-      `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada transaksi</div>'}
-    </div>
+    <div class="section-title" style="margin-bottom:8px;">Pendapatan per Kategori Billing</div>
+    ${Object.entries(billingCats).map(([cat,v])=>`<div class="card" style="margin-bottom:8px;"><div style="font-weight:700;margin-bottom:4px;">${cat}</div><div class="grid-3"><div><div class="stat-label">Tunai</div><div style="font-weight:600">${fmtRp(v.cash)}</div></div><div><div class="stat-label">Non-Tunai</div><div style="font-weight:600">${fmtRp(v.noncash)}</div></div><div><div class="stat-label">Total</div><div style="font-weight:700;color:var(--mocha-700)">${fmtRp(v.total)}</div></div></div></div>`).join('')||'<p style="color:var(--text-muted)">Tidak ada data billing</p>'}
+    <div class="section-title" style="margin:12px 0 8px;">Pendapatan POS</div>
+    <div class="grid-3"><div class="stat-card"><div class="stat-label">Tunai</div><div class="stat-val">${fmtRp(posCash)}</div></div><div class="stat-card"><div class="stat-label">Non-Tunai</div><div class="stat-val">${fmtRp(posNonCash)}</div></div><div class="stat-card"><div class="stat-label">Total</div><div class="stat-val">${fmtRp(posTotal)}</div></div></div>
+    <div class="section-title" style="margin:12px 0 8px;">Detail Pendapatan</div>
+    <div class="scroll-panel">${revenues.map(r=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${r.type==='billing'?'🎮 '+r.category:'🛒 POS'}</div><div style="font-size:.75rem;color:var(--text-muted)">${fmtDate(r.date)} • ${r.payType==='cash'?'Tunai':'Non-Tunai'}</div></div><span style="font-weight:700">${fmtRp(r.amount)}</span></div>`).join('')||'<p style="color:var(--text-muted)">Tidak ada transaksi</p>'}</div>
   `;
 }
-window.renderDashboard = renderDashboard;
-
-function calcCOGS(txns) {
-  return txns.reduce((s,t)=>{
-    return s + (t.items||[]).reduce((ss,item)=>{
-      const inv = state.inventory[item.id];
-      return ss + (inv?.buyPrice||0)*(item.qty||1);
-    },0);
-  },0);
-}
-
-function getFilterDates() {
-  const fromEl = document.getElementById('dash-from')||document.getElementById('ach-from')||document.getElementById('exp-from');
-  const toEl = document.getElementById('dash-to')||document.getElementById('ach-to')||document.getElementById('exp-to');
-  const today = new Date().toISOString().split('T')[0];
-  const monthStart = today.substr(0,7)+'-01';
-  return [fromEl?.value||monthStart, toEl?.value||today];
-}
-
-function filterByDate(ts, from, to) {
-  if(!ts) return true;
-  const d = new Date(ts).toISOString().split('T')[0];
-  return d>=from && d<=to;
-}
+window.loadDashboard=loadDashboard;
 
 // ACHIEVEMENT
-function renderAchievement() {
-  const mc = document.getElementById('main-content');
-  const txns = Object.values(state.transactions||{});
-  const today = new Date();
-  const month = parseInt(document.getElementById('ach-month')?.value)||today.getMonth()+1;
-  const year = parseInt(document.getElementById('ach-year')?.value)||today.getFullYear();
-
-  const filtered = txns.filter(t=>{
-    const d = new Date(t.createdAt||0);
-    return d.getMonth()+1===month && d.getFullYear()===year;
-  });
-
-  const cats = Object.entries(state.categories||{});
-  const posTxns = filtered.filter(t=>t.type==='pos');
-  const totalPOS = posTxns.reduce((s,t)=>s+t.total,0);
-
-  mc.innerHTML = `
-    ${adminHeader('🏆 Achievement')}
-    <div class="card">
-      <div class="card-title">Filter Bulan</div>
-      <div class="row">
-        <div class="form-group"><label>Bulan</label>
-          <select id="ach-month" onchange="renderAchievement()">
-            ${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${i+1===month?'selected':''}>${new Date(2000,i).toLocaleString('id-ID',{month:'long'})}</option>`).join('')}
-          </select>
-        </div>
-        <div class="form-group"><label>Tahun</label>
-          <input type="number" id="ach-year" value="${year}" onchange="renderAchievement()" style="text-align:center">
-        </div>
-      </div>
+async function renderAchievement(el){
+  const now=new Date();
+  el.innerHTML=`
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <select id="achMonth" style="flex:1;min-width:100px;"><option value="${now.getMonth()+1}" selected>${now.toLocaleString('id-ID',{month:'long'})}</option>${Array.from({length:12},(_,i)=>`<option value="${i+1}">${new Date(2000,i).toLocaleString('id-ID',{month:'long'})}</option>`).join('')}</select>
+      <input type="number" id="achYear" value="${now.getFullYear()}" min="2020" max="2099" style="width:90px;"/>
+      <button class="btn btn-primary btn-sm" onclick="loadAchievement()">Tampilkan</button>
     </div>
-    <div class="card">
-      <div class="card-title">Pencapaian POS</div>
-      ${renderAchRow('pos', totalPOS, month, year)}
+    <div id="achContent"></div>
+  `;
+  loadAchievement();
+}
+
+async function loadAchievement(){
+  const month=parseInt(document.getElementById('achMonth')?.value)||new Date().getMonth()+1;
+  const year=parseInt(document.getElementById('achYear')?.value)||new Date().getFullYear();
+  const from=new Date(year,month-1,1).getTime();
+  const to=new Date(year,month,0,23,59,59).getTime();
+  const revSnap=await get(ref(db,'revenue'));
+  const targetSnap=await get(ref(db,'targets/'+year+'/'+month));
+  const revenues=revSnap.exists()?Object.values(revSnap.val()).filter(r=>r.date>=from&&r.date<=to):[];
+  const targets=targetSnap.exists()?targetSnap.val():{};
+  // Billing by category
+  const billingCats={};revenues.filter(r=>r.type==='billing').forEach(r=>{if(!billingCats[r.category])billingCats[r.category]=0;billingCats[r.category]+=r.amount;});
+  const posTotal=revenues.filter(r=>r.type==='pos').reduce((s,r)=>s+r.amount,0);
+  const el=document.getElementById('achContent');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="section-title" style="margin-bottom:8px;">POS</div>
+    <div class="card" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600">POS</span><span style="font-size:.8rem;color:var(--text-muted)">Target: <input type="number" value="${targets['pos']||0}" onchange="saveTarget('pos',this.value,'${year}','${month}')" style="width:80px;padding:2px 6px;font-size:.8rem;"/> </span></div>
+      <div style="font-weight:700">${fmtRp(posTotal)}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,targets['pos']?posTotal/targets['pos']*100:0)}%"></div></div>
+      <div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;">${targets['pos']?Math.round(posTotal/targets['pos']*100):0}% dari target</div>
     </div>
-    <div class="card">
-      <div class="card-title">Pencapaian per Kategori</div>
-      ${cats.map(([id,c])=>{
-        const catTotal = filtered.filter(t=>t.type==='billing'&&t.categoryId===id).reduce((s,t)=>s+t.total,0);
-        return `<div style="margin-bottom:10px">${renderAchRow(id, catTotal, month, year, c.name)}</div>`;
-      }).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada kategori</div>'}
-    </div>
+    <div class="section-title" style="margin-bottom:8px;">Kategori Billing</div>
+    ${Object.entries(billingCats).map(([cat,amt])=>`<div class="card" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:600">${cat}</span><span style="font-size:.8rem;color:var(--text-muted)">Target: <input type="number" value="${targets[cat]||0}" onchange="saveTarget('${cat}',this.value,'${year}','${month}')" style="width:80px;padding:2px 6px;font-size:.8rem;"/></span></div><div style="font-weight:700">${fmtRp(amt)}</div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(100,targets[cat]?amt/targets[cat]*100:0)}%"></div></div><div style="font-size:.75rem;color:var(--text-muted);margin-top:2px;">${targets[cat]?Math.round(amt/targets[cat]*100):0}% dari target</div></div>`).join('')||'<p style="color:var(--text-muted)">Tidak ada data billing</p>'}
   `;
 }
-window.renderAchievement = renderAchievement;
+window.loadAchievement=loadAchievement;
 
-function renderAchRow(key, actual, month, year, label='') {
-  const achKey = `ach_${key}_${year}_${month}`;
-  const target = parseInt(state.settings?.[achKey]||0)||0;
-  const pct = target>0 ? Math.min(100,Math.round((actual/target)*100)) : 0;
-  return `
-    <div>
-      ${label?`<div style="font-size:13px;font-weight:600;margin-bottom:6px">${label}</div>`:''}
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-        <span>Actual: <strong>${formatRp(actual)}</strong></span>
-        <span>Target: <strong>${formatRp(target)}</strong></span>
-        <span style="color:${pct>=100?'var(--green)':pct>=70?'var(--yellow)':'var(--red)'}">${pct}%</span>
-      </div>
-      <div style="background:var(--border);border-radius:4px;height:8px;margin-bottom:6px">
-        <div style="background:${pct>=100?'var(--green)':pct>=70?'var(--yellow)':'var(--accent)'};height:8px;border-radius:4px;width:${pct}%"></div>
-      </div>
-      <div class="row">
-        <input type="number" id="target-${key}" placeholder="Edit Target" value="${target}">
-        <button class="btn btn-secondary btn-sm" onclick="saveTarget('${key}','${month}','${year}')">Simpan</button>
-      </div>
-    </div>
-  `;
+async function saveTarget(key,val,year,month){
+  await set(ref(db,'targets/'+year+'/'+month+'/'+key),Number(val));
+  toast('Target disimpan!');
 }
-
-async function saveTarget(key, month, year) {
-  const val = parseInt(document.getElementById('target-'+key)?.value)||0;
-  await dbWrite(`settings/ach_${key}_${year}_${month}`, val);
-  toast('Target disimpan');
-}
-window.saveTarget = saveTarget;
+window.saveTarget=saveTarget;
 
 // MEMBER ADMIN
-function renderMemberAdmin() {
-  const mc = document.getElementById('main-content');
-  const tab = window._memberTab||'points';
-  const members = Object.entries(state.members||{});
-  const sorted = [...members].sort(([,a],[,b])=>(b.points||0)-(a.points||0));
-  const vouchers = Object.entries(state.vouchers||{});
-
-  mc.innerHTML = `
-    ${adminHeader('👥 Member')}
+async function renderMemberAdmin(el){
+  el.innerHTML=`
     <div class="tabs">
-      <button class="tab ${tab==='points'?'active':''}" onclick="window._memberTab='points';renderMemberAdmin()">Poin & Ranking</button>
-      <button class="tab ${tab==='vouchers'?'active':''}" onclick="window._memberTab='vouchers';renderMemberAdmin()">Voucher</button>
+      <div class="tab active" onclick="switchMemberAdminTab('tabMemberPoin',this)">💎 Poin</div>
+      <div class="tab" onclick="switchMemberAdminTab('tabMemberVoucher',this)">🎫 Voucher</div>
+      <div class="tab" onclick="switchMemberAdminTab('tabMemberHistory',this)">📋 History</div>
     </div>
-    ${tab==='points'?`
-      <div class="card">
-        <div class="card-title">Tambah Member</div>
-        <div class="form-group"><label>Nama</label><input id="new-member-name" placeholder="Nama Member"></div>
-        <div class="form-group"><label>No HP (jadi No Member)</label><input id="new-member-no" placeholder="08xxxxxxxx" type="tel"></div>
-        <button class="btn btn-primary btn-full" onclick="addMember()">Tambah Member</button>
-      </div>
-      <div class="card">
-        <div class="card-title">Ranking Member</div>
-        ${sorted.map(([no,m],i)=>`
-          <div class="list-item">
-            <div style="font-size:18px;font-weight:800;color:var(--text3);min-width:30px">${i+1}</div>
-            <div class="list-item-info">
-              <div class="list-item-name">${m.name}</div>
-              <div class="list-item-sub">${no}</div>
-            </div>
-            <span style="font-family:'Syne',sans-serif;font-weight:700;color:var(--accent)">${m.points||0} poin</span>
-          </div>
-        `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada member</div>'}
-      </div>
-    `:''
-    }
-    ${tab==='vouchers'?`
-      <div class="card">
-        <div class="card-title">Daftar Voucher Member</div>
-        ${vouchers.length===0?'<div style="color:var(--text3);font-size:13px">Belum ada voucher</div>':
-          vouchers.map(([vid,v])=>`
-            <div class="list-item">
-              <div class="list-item-info">
-                <div class="list-item-name">${state.members[v.member]?.name||v.member}</div>
-                <div class="list-item-sub">Kode: ${v.code} · ${v.description||'Voucher'}</div>
-              </div>
-              <span class="badge ${v.redeemed?'badge-red':'badge-green'}">${v.redeemed?'Diredeem':'Aktif'}</span>
-            </div>
-          `).join('')
-        }
-      </div>
-    `:''}
+    <div class="tab-content active" id="tabMemberPoin"></div>
+    <div class="tab-content" id="tabMemberVoucher"></div>
+    <div class="tab-content" id="tabMemberHistory"></div>
   `;
+  loadMemberPoin();
 }
-window.renderMemberAdmin = renderMemberAdmin;
 
-async function addMember() {
-  const name = document.getElementById('new-member-name').value.trim();
-  const no = document.getElementById('new-member-no').value.trim();
-  if(!name||!no) return toast('Isi semua field','error');
-  if(state.members[no]) return toast('Member sudah ada','error');
-  await dbWrite(`members/${no}`, { name, points: 0, createdAt: Date.now() });
-  document.getElementById('new-member-name').value='';
-  document.getElementById('new-member-no').value='';
-  toast('Member ditambahkan!');
+async function loadMemberPoin(){
+  const snap=await get(ref(db,'members'));
+  const el=document.getElementById('tabMemberPoin');
+  if(!snap||!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Belum ada member</p>';return;}
+  const members=Object.entries(snap.val()).map(([k,v])=>({id:k,...v})).sort((a,b)=>(b.points||0)-(a.points||0));
+  el.innerHTML=members.map((m,i)=>`<div class="list-item"><div class="rank-num ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">#${i+1}</div><div style="flex:1"><div style="font-weight:600">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted)">${m.phone}</div></div><span class="badge badge-mocha">💎 ${m.points||0}</span></div>`).join('');
 }
-window.addMember = addMember;
 
-// BILLING ADMIN
-function renderBillingAdmin() {
-  const mc = document.getElementById('main-content');
-  const cats = Object.entries(state.categories||{});
-  mc.innerHTML = `
-    ${adminHeader('⏱ Manajemen Billing')}
-    <div class="card">
-      <div class="card-title">Tambah Kategori</div>
-      <div class="row">
-        <input id="cat-name" placeholder="Nama Kategori">
-        <input id="cat-icon" placeholder="Emoji Icon" style="max-width:80px">
-      </div>
-      <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="addCategory()">Tambah</button>
-    </div>
-    ${cats.map(([cid,cat])=>`
-      <div class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <div style="font-family:'Syne',sans-serif;font-weight:700">${cat.icon||'🎮'} ${cat.name}</div>
-          <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cid}')">Hapus</button>
-        </div>
-        <div style="font-size:12px;color:var(--text2);margin-bottom:8px">Jenis:</div>
-        ${Object.entries(cat.types||{}).map(([tid,type])=>`
-          <div style="background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <strong style="font-size:13px">${type.name}</strong>
-              <button class="btn btn-danger btn-sm" onclick="deleteType('${cid}','${tid}')">Hapus</button>
-            </div>
-            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Paket:</div>
-            ${Object.entries(type.packages||{}).map(([pid,pkg])=>`
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)">
-                <span style="font-size:12px">${pkg.name} · ${pkg.duration} · ${formatRp(pkg.price)}</span>
-                <button class="btn-icon" onclick="deletePackage('${cid}','${tid}','${pid}')">🗑</button>
-              </div>
-            `).join('')}
-            <div class="row" style="margin-top:8px">
-              <input id="pkg-name-${tid}" placeholder="Nama Paket" style="font-size:12px">
-              <input id="pkg-dur-${tid}" placeholder="Durasi (1 jam)" style="font-size:12px">
-              <input id="pkg-price-${tid}" placeholder="Harga" type="number" style="font-size:12px">
-              <button class="btn btn-secondary btn-sm" onclick="addPackage('${cid}','${tid}')">+</button>
-            </div>
-          </div>
-        `).join('')}
-        <div class="row" style="margin-top:8px">
-          <input id="type-name-${cid}" placeholder="Nama Jenis Baru">
-          <button class="btn btn-secondary btn-sm" onclick="addType('${cid}')">+ Jenis</button>
+async function loadMemberVoucher(){
+  const snap=await get(ref(db,'members'));
+  const vSnap=await get(ref(db,'vouchers'));
+  const el=document.getElementById('tabMemberVoucher');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Tidak ada data</p>';return;}
+  const members=Object.entries(snap.val()).map(([k,v])=>({id:k,...v}));
+  const voucherData=vSnap.exists()?vSnap.val():{};
+  const rows=members.map(m=>{
+    const mvs=voucherData[m.id]?Object.values(voucherData[m.id]):[];
+    const active=mvs.filter(v=>!v.redeemed).length;
+    const redeemed=mvs.filter(v=>v.redeemed);
+    if(!mvs.length)return'';
+    return `<div class="list-item"><div style="flex:1"><div style="font-weight:600">${m.name}</div><div style="font-size:.78rem;color:var(--text-muted)">${m.phone}</div></div><span class="badge badge-success">${active} Aktif</span><span class="badge badge-info" style="margin-left:4px">${redeemed.length} Dipakai</span></div>`;
+  }).join('');
+  el.innerHTML=rows||'<p style="color:var(--text-muted)">Tidak ada voucher</p>';
+}
+
+async function loadMemberHistory(){
+  const snap=await get(ref(db,'poinHistory'));
+  const el=document.getElementById('tabMemberHistory');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Belum ada riwayat penukaran poin</p>';return;}
+  const items=Object.values(snap.val()).sort((a,b)=>b.date-a.date);
+  el.innerHTML=items.map(h=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${h.memberName}</div><div style="font-size:.78rem;color:var(--text-muted)">${fmtDate(h.date)} • ${h.memberId}</div></div><div style="text-align:right"><div style="font-weight:600">${h.item}</div><div style="font-size:.75rem;color:var(--danger)">-${h.points} poin</div></div></div>`).join('');
+}
+
+function switchMemberAdminTab(tabId,el){
+  document.querySelectorAll('#pageAdmin .tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#pageAdmin .tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes('MemberAdmin'))t.classList.remove('active');});
+  document.getElementById(tabId).classList.add('active');
+  el.classList.add('active');
+  if(tabId==='tabMemberPoin')loadMemberPoin();
+  if(tabId==='tabMemberVoucher')loadMemberVoucher();
+  if(tabId==='tabMemberHistory')loadMemberHistory();
+}
+window.switchMemberAdminTab=switchMemberAdminTab;
+
+// BILLING ADMIN (categories)
+async function renderBillingAdmin(el){
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="section-title">Kategori</div><button class="btn btn-primary btn-sm" onclick="addCategory()">+ Kategori</button></div>
+    <div id="billingAdminList"></div>
+  `;
+  loadBillingAdmin();
+}
+
+async function loadBillingAdmin(){
+  const snap=await get(ref(db,'categories'));
+  const el=document.getElementById('billingAdminList');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Belum ada kategori</p>';return;}
+  const cats=Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
+  el.innerHTML=cats.map(cat=>`
+    <div class="card" style="margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div style="font-weight:700">${cat.name}</div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-outline btn-sm" onclick="addService('${cat.key}')">+ Jenis</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCategory('${cat.key}')">🗑</button>
         </div>
       </div>
-    `).join('')}
-  `;
-}
-window.renderBillingAdmin = renderBillingAdmin;
-
-async function addCategory() {
-  const name = document.getElementById('cat-name').value.trim();
-  const icon = document.getElementById('cat-icon').value.trim();
-  if(!name) return toast('Isi nama kategori','error');
-  await dbPushData('categories', { name, icon: icon||'🎮', types: {} });
-  toast('Kategori ditambahkan');
-}
-window.addCategory = addCategory;
-
-async function deleteCategory(cid) {
-  if(!confirm('Hapus kategori ini?')) return;
-  await dbDel(`categories/${cid}`);
-  toast('Kategori dihapus');
-}
-window.deleteCategory = deleteCategory;
-
-async function addType(cid) {
-  const name = document.getElementById(`type-name-${cid}`).value.trim();
-  if(!name) return;
-  await dbPushData(`categories/${cid}/types`, { name, packages: {} });
-  toast('Jenis ditambahkan');
-}
-window.addType = addType;
-
-async function deleteType(cid, tid) {
-  await dbDel(`categories/${cid}/types/${tid}`);
-  toast('Jenis dihapus');
-}
-window.deleteType = deleteType;
-
-async function addPackage(cid, tid) {
-  const name = document.getElementById(`pkg-name-${tid}`).value.trim();
-  const duration = document.getElementById(`pkg-dur-${tid}`).value.trim();
-  const price = parseInt(document.getElementById(`pkg-price-${tid}`).value)||0;
-  if(!name||!duration) return toast('Isi nama dan durasi','error');
-  await dbPushData(`categories/${cid}/types/${tid}/packages`, { name, duration, price });
-  toast('Paket ditambahkan');
-}
-window.addPackage = addPackage;
-
-async function deletePackage(cid, tid, pid) {
-  await dbDel(`categories/${cid}/types/${tid}/packages/${pid}`);
-  toast('Paket dihapus');
-}
-window.deletePackage = deletePackage;
-
-// INVENTORY
-function renderInventoryAdmin() {
-  const mc = document.getElementById('main-content');
-  const items = Object.entries(state.inventory||{});
-  mc.innerHTML = `
-    ${adminHeader('📦 Inventory')}
-    <div class="card">
-      <div class="card-title">Tambah Barang</div>
-      <div class="form-group"><label>Barcode</label><input id="inv-barcode" placeholder="Barcode"></div>
-      <div class="form-group"><label>Nama Barang</label><input id="inv-name" placeholder="Nama Barang"></div>
-      <div class="row">
-        <div class="form-group"><label>Harga Beli</label><input id="inv-buy" type="number" placeholder="0"></div>
-        <div class="form-group"><label>Harga Jual</label><input id="inv-sell" type="number" placeholder="0"></div>
-      </div>
-      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">PLU akan terbentuk otomatis dari 4 digit terakhir barcode</div>
-      <button class="btn btn-primary btn-full" onclick="addInventory()">Tambah Barang</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Daftar Barang</div>
-      ${items.length===0?'<div style="color:var(--text3);font-size:13px">Belum ada barang</div>':
-        items.map(([id,item])=>`
-          <div class="list-item">
-            <div class="list-item-info">
-              <div class="list-item-name">${item.name}</div>
-              <div class="list-item-sub">PLU: ${item.plu} · Beli: ${formatRp(item.buyPrice)} · Jual: ${formatRp(item.sellingPrice)}</div>
+      ${(cat.services||[]).map((svc,si)=>`
+        <div style="background:var(--surface2);border-radius:8px;padding:10px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-weight:600">${svc.name}</div>
+            <div style="display:flex;gap:4px;">
+              <button class="btn btn-outline btn-sm" onclick="addPackage('${cat.key}',${si})">+ Paket</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteService('${cat.key}',${si})">🗑</button>
             </div>
-            <button class="btn-icon" onclick="deleteInventory('${id}')">🗑</button>
           </div>
-        `).join('')
-      }
-    </div>
-  `;
-}
-window.renderInventoryAdmin = renderInventoryAdmin;
-
-async function addInventory() {
-  const barcode = document.getElementById('inv-barcode').value.trim();
-  const name = document.getElementById('inv-name').value.trim();
-  const buyPrice = parseInt(document.getElementById('inv-buy').value)||0;
-  const sellingPrice = parseInt(document.getElementById('inv-sell').value)||0;
-  if(!name) return toast('Isi nama barang','error');
-  const plu = genPLU(barcode);
-  await dbPushData('inventory', { barcode, name, buyPrice, sellingPrice, plu, createdAt: Date.now() });
-  toast('Barang ditambahkan');
-}
-window.addInventory = addInventory;
-
-async function deleteInventory(id) {
-  if(!confirm('Hapus barang ini?')) return;
-  await dbDel(`inventory/${id}`);
-  toast('Barang dihapus');
-}
-window.deleteInventory = deleteInventory;
-
-// EXPENSES
-function renderExpenses() {
-  const mc = document.getElementById('main-content');
-  const exps = Object.entries(state.expenses||{});
-  const today = new Date().toISOString().split('T')[0];
-  const monthStart = today.substr(0,7)+'-01';
-  const from = document.getElementById('exp-from')?.value||monthStart;
-  const to = document.getElementById('exp-to')?.value||today;
-  const filtered = exps.filter(([,e])=>filterByDate(e.createdAt,from,to));
-  const total = filtered.reduce((s,[,e])=>s+e.amount,0);
-
-  mc.innerHTML = `
-    ${adminHeader('💸 Pengeluaran')}
-    <div class="card">
-      <div class="card-title">Catat Pengeluaran</div>
-      <div class="form-group"><label>Tujuan</label><input id="exp-desc" placeholder="Beli bahan, listrik, dll"></div>
-      <div class="form-group"><label>Nominal</label><input id="exp-amount" type="number" placeholder="0"></div>
-      <button class="btn btn-primary btn-full" onclick="addExpense()">Catat</button>
-    </div>
-    <div class="card">
-      <div class="card-title">Filter & Total</div>
-      <div class="row">
-        <div class="form-group"><label>Dari</label><input type="date" id="exp-from" value="${from}"></div>
-        <div class="form-group"><label>Sampai</label><input type="date" id="exp-to" value="${to}"></div>
-      </div>
-      <button class="btn btn-secondary btn-sm" onclick="renderExpenses()">Tampilkan</button>
-      <div style="margin-top:10px;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)">Total: ${formatRp(total)}</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Rincian</div>
-      ${filtered.slice().reverse().map(([id,e])=>`
-        <div class="list-item">
-          <div class="list-item-info">
-            <div class="list-item-name">${e.description}</div>
-            <div class="list-item-sub">${formatDateTime(e.createdAt)}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-weight:600">${formatRp(e.amount)}</span>
-            <button class="btn-icon" onclick="deleteExpense('${id}')">🗑</button>
-          </div>
+          ${(svc.packages||[]).map((p,pi)=>`<div class="list-item" style="padding:6px 0;"><div style="flex:1"><div style="font-size:.85rem;font-weight:600">${p.name}</div><div style="font-size:.75rem;color:var(--text-muted)">${p.duration} menit</div></div><span style="font-weight:700">${fmtRp(p.price)}</span><button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="deletePackage('${cat.key}',${si},${pi})">🗑</button></div>`).join('')||'<p style="font-size:.78rem;color:var(--text-muted)">Belum ada paket</p>'}
         </div>
-      `).join('')||'<div style="color:var(--text3);font-size:13px">Belum ada pengeluaran</div>'}
+      `).join('')||'<p style="color:var(--text-muted);font-size:.82rem">Belum ada jenis</p>'}
+    </div>
+  `).join('');
+}
+
+async function addCategory(){
+  const name=prompt('Nama kategori:');
+  if(!name)return;
+  await push(ref(db,'categories'),{name,services:[]});
+  loadBillingAdmin();toast('Kategori ditambah!');
+}
+async function deleteCategory(key){
+  if(!confirm('Hapus kategori?'))return;
+  await remove(ref(db,'categories/'+key));
+  loadBillingAdmin();toast('Kategori dihapus!');
+}
+async function addService(catKey){
+  const name=prompt('Nama jenis layanan:');
+  if(!name)return;
+  const snap=await get(ref(db,'categories/'+catKey));
+  const cat=snap.val();
+  const services=[...(cat.services||[]),{name,packages:[]}];
+  await update(ref(db,'categories/'+catKey),{services});
+  loadBillingAdmin();toast('Jenis ditambah!');
+}
+async function deleteService(catKey,idx){
+  if(!confirm('Hapus jenis?'))return;
+  const snap=await get(ref(db,'categories/'+catKey));
+  const cat=snap.val();
+  cat.services.splice(idx,1);
+  await update(ref(db,'categories/'+catKey),{services:cat.services});
+  loadBillingAdmin();
+}
+async function addPackage(catKey,svcIdx){
+  const name=prompt('Nama paket:');if(!name)return;
+  const duration=parseInt(prompt('Durasi (menit):'));if(!duration)return;
+  const price=parseInt(prompt('Harga (Rp):'));if(isNaN(price))return;
+  const snap=await get(ref(db,'categories/'+catKey));
+  const cat=snap.val();
+  cat.services[svcIdx].packages=[...(cat.services[svcIdx].packages||[]),{name,duration,price}];
+  await update(ref(db,'categories/'+catKey),{services:cat.services});
+  loadBillingAdmin();toast('Paket ditambah!');
+}
+async function deletePackage(catKey,svcIdx,pkgIdx){
+  if(!confirm('Hapus paket?'))return;
+  const snap=await get(ref(db,'categories/'+catKey));
+  const cat=snap.val();
+  cat.services[svcIdx].packages.splice(pkgIdx,1);
+  await update(ref(db,'categories/'+catKey),{services:cat.services});
+  loadBillingAdmin();
+}
+window.addCategory=addCategory;window.deleteCategory=deleteCategory;window.addService=addService;window.deleteService=deleteService;window.addPackage=addPackage;window.deletePackage=deletePackage;
+
+// INVENTORY ADMIN
+async function renderInventoryAdmin(el){
+  el.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><div class="section-title">Inventory</div><button class="btn btn-primary btn-sm" onclick="showAddProduct()">+ Produk</button></div>
+    <div id="addProductForm" style="display:none;" class="card">
+      <div class="section-title" style="margin-bottom:10px;">Tambah Produk</div>
+      <div class="form-group"><label>Barcode</label><input type="text" id="invBarcode" placeholder="Barcode" oninput="autoFillPLU()"/></div>
+      <div class="form-group"><label>PLU (auto)</label><input type="text" id="invPLU" placeholder="4 digit terakhir barcode" readonly/></div>
+      <div class="form-group"><label>Nama Barang</label><input type="text" id="invName" placeholder="Nama barang"/></div>
+      <div class="form-group"><label>Harga Beli</label><input type="number" id="invBuyPrice" placeholder="0"/></div>
+      <div class="form-group"><label>Harga Jual</label><input type="number" id="invSellPrice" placeholder="0"/></div>
+      <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="saveProduct()">Simpan</button><button class="btn btn-outline btn-sm" onclick="hideAddProduct()">Batal</button></div>
+    </div>
+    <div id="inventoryList"></div>
+  `;
+  loadInventory();
+}
+
+function showAddProduct(){document.getElementById('addProductForm').style.display='block';}
+function hideAddProduct(){document.getElementById('addProductForm').style.display='none';}
+function autoFillPLU(){const b=document.getElementById('invBarcode').value;document.getElementById('invPLU').value=genPLU(b);}
+async function saveProduct(){
+  const barcode=document.getElementById('invBarcode').value.trim();
+  const name=document.getElementById('invName').value.trim();
+  const buyPrice=Number(document.getElementById('invBuyPrice').value)||0;
+  const sellPrice=Number(document.getElementById('invSellPrice').value)||0;
+  const plu=genPLU(barcode);
+  if(!name){toast('Isi nama barang!');return;}
+  await push(ref(db,'inventory'),{barcode,name,buyPrice,sellPrice,plu,createdAt:Date.now()});
+  toast('Produk ditambah!');
+  hideAddProduct();
+  loadInventory();
+}
+async function loadInventory(){
+  const snap=await get(ref(db,'inventory'));
+  const el=document.getElementById('inventoryList');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Belum ada produk</p>';return;}
+  const items=Object.entries(snap.val()).map(([k,v])=>({key:k,...v}));
+  el.innerHTML=items.map(p=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${p.name}</div><div style="font-size:.75rem;color:var(--text-muted)">PLU: ${p.plu} | Barcode: ${p.barcode||'-'}</div><div style="font-size:.75rem">Beli: ${fmtRp(p.buyPrice)} | Jual: ${fmtRp(p.sellPrice)}</div></div><button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.key}')">🗑</button></div>`).join('');
+}
+async function deleteProduct(key){
+  if(!confirm('Hapus produk?'))return;
+  await remove(ref(db,'inventory/'+key));
+  loadInventory();toast('Produk dihapus!');
+}
+window.showAddProduct=showAddProduct;window.hideAddProduct=hideAddProduct;window.autoFillPLU=autoFillPLU;window.saveProduct=saveProduct;window.loadInventory=loadInventory;window.deleteProduct=deleteProduct;
+
+// EXPENSE
+async function renderExpenseAdmin(el){
+  const now=new Date();
+  el.innerHTML=`
+    <div class="section-title" style="margin-bottom:10px;">Catat Pengeluaran</div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="form-group"><label>Tujuan</label><input type="text" id="expDesc" placeholder="Keterangan pengeluaran"/></div>
+      <div class="form-group"><label>Nominal</label><input type="number" id="expAmount" placeholder="0"/></div>
+      <button class="btn btn-primary btn-sm" onclick="saveExpense()">Simpan</button>
+    </div>
+    <div style="margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:8px;">Filter Tanggal</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="date" id="expFrom" style="flex:1;min-width:130px;" value="${new Date(now.getTime()-7*86400000).toISOString().slice(0,10)}"/>
+        <input type="date" id="expTo" style="flex:1;min-width:130px;" value="${now.toISOString().slice(0,10)}"/>
+        <button class="btn btn-primary btn-sm" onclick="loadExpenses()">Filter</button>
+      </div>
+    </div>
+    <div id="expList"></div>
+  `;
+  loadExpenses();
+}
+
+async function saveExpense(){
+  const desc=document.getElementById('expDesc').value.trim();
+  const amount=Number(document.getElementById('expAmount').value)||0;
+  if(!desc||!amount){toast('Isi semua field!');return;}
+  await push(ref(db,'expenses'),{description:desc,amount,date:Date.now()});
+  toast('Pengeluaran disimpan!');
+  document.getElementById('expDesc').value='';
+  document.getElementById('expAmount').value='';
+  loadExpenses();
+}
+async function loadExpenses(){
+  const from=new Date(document.getElementById('expFrom')?.value||'2020-01-01').getTime();
+  const to=new Date(document.getElementById('expTo')?.value||new Date().toISOString().slice(0,10)).getTime()+86399999;
+  const snap=await get(ref(db,'expenses'));
+  const el=document.getElementById('expList');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Belum ada pengeluaran</p>';return;}
+  const items=Object.values(snap.val()).filter(e=>e.date>=from&&e.date<=to).sort((a,b)=>b.date-a.date);
+  const total=items.reduce((s,e)=>s+e.amount,0);
+  el.innerHTML=`<div class="card" style="margin-bottom:10px;"><div class="stat-label">Total Pengeluaran</div><div class="stat-val" style="color:var(--danger)">${fmtRp(total)}</div></div>`+items.map(e=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${e.description}</div><div style="font-size:.75rem;color:var(--text-muted)">${fmtDate(e.date)}</div></div><span style="font-weight:700;color:var(--danger)">${fmtRp(e.amount)}</span></div>`).join('');
+}
+window.saveExpense=saveExpense;window.loadExpenses=loadExpenses;
+
+// HISTORY POS ADMIN
+async function renderHistoryPosAdmin(el){
+  const now=new Date();
+  el.innerHTML=`
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <input type="date" id="histPosFrom" style="flex:1;min-width:130px;" value="${now.toISOString().slice(0,10)}"/>
+      <input type="date" id="histPosTo" style="flex:1;min-width:130px;" value="${now.toISOString().slice(0,10)}"/>
+      <button class="btn btn-primary btn-sm" onclick="loadHistPosAdmin()">Filter</button>
+    </div>
+    <div id="histPosAdminList"></div>
+  `;
+  loadHistPosAdmin();
+}
+
+async function loadHistPosAdmin(){
+  const from=new Date(document.getElementById('histPosFrom')?.value||'2020-01-01').getTime();
+  const to=new Date(document.getElementById('histPosTo')?.value||new Date().toISOString().slice(0,10)).getTime()+86399999;
+  const snap=await get(ref(db,'transactions'));
+  const el=document.getElementById('histPosAdminList');
+  if(!el)return;
+  if(!snap.exists()){el.innerHTML='<p style="color:var(--text-muted)">Tidak ada transaksi</p>';return;}
+  const items=Object.values(snap.val()).filter(t=>t.date>=from&&t.date<=to).sort((a,b)=>b.date-a.date);
+  el.innerHTML=items.map(tx=>`<div class="card" style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;"><div><div style="font-weight:700">${fmtRp(tx.total)}</div><div style="font-size:.75rem;color:var(--text-muted)">${fmtDate(tx.date)} • ${tx.payType==='cash'?'Tunai':'Non-Tunai'}</div>${tx.memberName?`<div style="font-size:.75rem">👤 ${tx.memberName} (+${tx.points} poin)</div>`:''}</div><span class="badge badge-success">Kembalian: ${fmtRp(tx.change)}</span></div><div style="font-size:.78rem;color:var(--text-secondary);">${tx.items.map(i=>`${i.name} x${i.qty} = ${fmtRp(i.subtotal)}`).join(' | ')}</div></div>`).join('')||'<p style="color:var(--text-muted)">Tidak ada transaksi di periode ini</p>';
+}
+window.loadHistPosAdmin=loadHistPosAdmin;
+
+// SETUP ADMIN
+async function renderSetupAdmin(el){
+  el.innerHTML=`
+    <div class="tabs">
+      <div class="tab active" onclick="switchSetupTab('tabGiftVoucher',this)">🎁 Gift Voucher</div>
+      <div class="tab" onclick="switchSetupTab('tabGiftPoin',this)">💎 Gift Poin</div>
+      <div class="tab" onclick="switchSetupTab('tabPoinExchange',this)">🔄 Kelola Poin</div>
+      <div class="tab" onclick="switchSetupTab('tabChangePin',this)">🔐 Ganti PIN</div>
+    </div>
+    <div class="tab-content active" id="tabGiftVoucher">
+      <div class="section-title" style="margin-bottom:10px;">Beri Voucher Manual</div>
+      <div class="form-group"><label>Tujuan</label>
+        <div style="display:flex;gap:8px;">
+          <select id="giftVoucherTarget" style="flex:1;"><option value="all">Semua Member</option><option value="specific">Member Tertentu</option></select>
+        </div>
+      </div>
+      <div id="giftVoucherMemberField" style="display:none;" class="form-group"><label>No Member</label><input type="text" id="giftVoucherMember" placeholder="No Member"/></div>
+      <div class="form-group"><label>Keterangan Hadiah</label><input type="text" id="giftVoucherDesc" placeholder="Hadiah voucher..."/></div>
+      <button class="btn btn-primary btn-sm" onclick="sendGiftVoucher()">Kirim Voucher</button>
+    </div>
+    <div class="tab-content" id="tabGiftPoin">
+      <div class="section-title" style="margin-bottom:10px;">Beri Poin Manual</div>
+      <div class="form-group"><label>Tujuan</label><select id="giftPoinTarget" style="flex:1;"><option value="all">Semua Member</option><option value="specific">Member Tertentu</option></select></div>
+      <div id="giftPoinMemberField" style="display:none;" class="form-group"><label>No Member</label><input type="text" id="giftPoinMember" placeholder="No Member"/></div>
+      <div class="form-group"><label>Jumlah Poin</label><input type="number" id="giftPoinAmount" placeholder="0"/></div>
+      <button class="btn btn-primary btn-sm" onclick="sendGiftPoin()">Kirim Poin</button>
+    </div>
+    <div class="tab-content" id="tabPoinExchange">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><div class="section-title">Daftar Penukaran</div><button class="btn btn-primary btn-sm" onclick="addPoinExchangeItem()">+ Tambah</button></div>
+      <div id="poinExchangeAdminList"></div>
+    </div>
+    <div class="tab-content" id="tabChangePin">
+      <div class="section-title" style="margin-bottom:10px;">Ganti PIN Admin</div>
+      <div class="form-group"><label>PIN Lama</label><input type="password" id="oldPin" maxlength="4" placeholder="PIN lama"/></div>
+      <div class="form-group"><label>PIN Baru</label><input type="password" id="newPin" maxlength="4" placeholder="PIN baru 4 digit"/></div>
+      <div class="form-group"><label>Konfirmasi PIN Baru</label><input type="password" id="confirmPin" maxlength="4" placeholder="Ulangi PIN baru"/></div>
+      <button class="btn btn-primary btn-sm" onclick="changeAdminPin()">Simpan PIN</button>
     </div>
   `;
-}
-window.renderExpenses = renderExpenses;
-
-async function addExpense() {
-  const description = document.getElementById('exp-desc').value.trim();
-  const amount = parseInt(document.getElementById('exp-amount').value)||0;
-  if(!description||!amount) return toast('Isi semua field','error');
-  await dbPushData('expenses', { description, amount, createdAt: Date.now() });
-  document.getElementById('exp-desc').value='';
-  document.getElementById('exp-amount').value='';
-  toast('Pengeluaran dicatat');
-}
-window.addExpense = addExpense;
-
-async function deleteExpense(id) {
-  await dbDel(`expenses/${id}`);
-  toast('Dihapus');
-}
-window.deleteExpense = deleteExpense;
-
-// SETUP
-function renderSetup() {
-  const mc = document.getElementById('main-content');
-  mc.innerHTML = `
-    ${adminHeader('⚙️ Setup')}
-    <div class="card">
-      <div class="card-title">Ganti PIN Admin</div>
-      <div class="form-group"><label>PIN Baru</label><input type="password" id="new-pin" placeholder="PIN baru" maxlength="8"></div>
-      <div class="form-group"><label>Konfirmasi PIN</label><input type="password" id="confirm-pin" placeholder="Ulangi PIN" maxlength="8"></div>
-      <button class="btn btn-primary btn-full" onclick="changePin()">Ganti PIN</button>
-    </div>
-    <div class="card">
-      <div class="card-title">🎁 Beri Voucher Manual</div>
-      <div class="form-group"><label>No Member</label><input id="gift-member" placeholder="No HP Member" type="tel"></div>
-      <div class="form-group"><label>Keterangan Hadiah</label><input id="gift-desc" placeholder="Gratis 1 jam, diskon 50%, dll"></div>
-      <button class="btn btn-primary btn-full" onclick="giveVoucher()">Beri Voucher</button>
-    </div>
-  `;
-}
-window.renderSetup = renderSetup;
-
-async function changePin() {
-  const np = document.getElementById('new-pin').value;
-  const cp = document.getElementById('confirm-pin').value;
-  if(!np||np!==cp) return toast('PIN tidak cocok','error');
-  if(np.length<4) return toast('PIN minimal 4 digit','error');
-  await dbWrite('settings/pin', np);
-  state.settings.pin = np;
-  toast('PIN berhasil diganti');
-}
-window.changePin = changePin;
-
-async function giveVoucher() {
-  const no = document.getElementById('gift-member').value.trim();
-  const desc = document.getElementById('gift-desc').value.trim();
-  if(!no||!desc) return toast('Isi semua field','error');
-  if(!state.members[no]) return toast('Member tidak ditemukan','error');
-  const code = genCode();
-  await dbPushData('vouchers', { member: no, code, description: desc, redeemed: false, createdAt: Date.now() });
-  toast(`Voucher ${code} diberikan ke ${state.members[no].name}`);
-  document.getElementById('gift-member').value='';
-  document.getElementById('gift-desc').value='';
-}
-window.giveVoucher = giveVoucher;
-
-// ============================================================
-// MEMBER POINTS & VOUCHERS
-// ============================================================
-async function addPoints(memberNo, pts) {
-  const m = state.members[memberNo];
-  if(!m) return;
-  const newPts = (m.points||0) + pts;
-  await dbWrite(`members/${memberNo}/points`, newPts);
+  document.getElementById('giftVoucherTarget').addEventListener('change',function(){document.getElementById('giftVoucherMemberField').style.display=this.value==='specific'?'block':'none';});
+  document.getElementById('giftPoinTarget').addEventListener('change',function(){document.getElementById('giftPoinMemberField').style.display=this.value==='specific'?'block':'none';});
+  loadPoinExchangeAdmin();
 }
 
-async function checkVoucherMilestone(memberNo) {
-  const m = await dbRead(`members/${memberNo}`);
-  if(!m) return;
-  const pts = m.points||0;
-  const claimed = m.voucherClaimed||0;
-  const eligible = Math.floor(pts/100);
-  if(eligible > claimed) {
-    // Give voucher
-    const code = genCode();
-    await dbPushData('vouchers', { member: memberNo, code, description: 'Gratis 1 Jam (100 Poin)', redeemed: false, createdAt: Date.now() });
-    await dbWrite(`members/${memberNo}/voucherClaimed`, eligible);
-    toast(`🎉 ${m.name} dapat voucher gratis 1 jam!`);
+function switchSetupTab(tabId,el){
+  document.querySelectorAll('#tabGiftVoucher,#tabGiftPoin,#tabPoinExchange,#tabChangePin').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('#adminContent .tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  el.classList.add('active');
+  if(tabId==='tabPoinExchange')loadPoinExchangeAdmin();
+}
+window.switchSetupTab=switchSetupTab;
+
+async function sendGiftVoucher(){
+  const target=document.getElementById('giftVoucherTarget').value;
+  const desc=document.getElementById('giftVoucherDesc').value.trim()||'Voucher Hadiah';
+  const code=genCode('V');
+  if(target==='all'){
+    const snap=await get(ref(db,'members'));
+    if(!snap.exists()){toast('Tidak ada member!');return;}
+    const promises=Object.keys(snap.val()).map(id=>push(ref(db,'vouchers/'+id),{code:genCode('V'),description:desc,createdAt:Date.now(),redeemed:false,source:'manual'}));
+    await Promise.all(promises);
+    toast('Voucher dikirim ke semua member!');
+  } else {
+    const memberId=document.getElementById('giftVoucherMember').value.trim();
+    if(!memberId){toast('Isi no member!');return;}
+    const m=await getMember(memberId);
+    if(!m){toast('Member tidak ditemukan!');return;}
+    await push(ref(db,'vouchers/'+memberId),{code,description:desc,createdAt:Date.now(),redeemed:false,source:'manual'});
+    toast('Voucher dikirim ke '+m.name+'!');
   }
 }
+window.sendGiftVoucher=sendGiftVoucher;
 
-// ============================================================
-// BOOT
-// ============================================================
-window.addEventListener('firebase-ready', () => {
-  initListeners();
-  renderHome();
-});
-
-// fallback if firebase-ready already fired
-if(window.firebaseReady) {
-  initListeners();
-  renderHome();
+async function sendGiftPoin(){
+  const target=document.getElementById('giftPoinTarget').value;
+  const points=Number(document.getElementById('giftPoinAmount').value)||0;
+  if(!points){toast('Masukan jumlah poin!');return;}
+  if(target==='all'){
+    const snap=await get(ref(db,'members'));
+    if(!snap.exists()){toast('Tidak ada member!');return;}
+    await Promise.all(Object.keys(snap.val()).map(id=>addPointsToMember(id,points)));
+    toast('Poin dikirim ke semua member!');
+  } else {
+    const memberId=document.getElementById('giftPoinMember').value.trim();
+    if(!memberId){toast('Isi no member!');return;}
+    const m=await getMember(memberId);
+    if(!m){toast('Member tidak ditemukan!');return;}
+    await addPointsToMember(memberId,points);
+    toast('Poin dikirim ke '+m.name+'!');
+  }
 }
+window.sendGiftPoin=sendGiftPoin;
+
+async function loadPoinExchangeAdmin(){
+  const list=await getPoinExchanges();
+  const el=document.getElementById('poinExchangeAdminList');
+  if(!el)return;
+  el.innerHTML=list.length?list.map(item=>`<div class="list-item"><div style="flex:1"><div style="font-weight:600">${item.name}</div><div style="font-size:.78rem;color:var(--text-muted)">${item.points} poin</div></div><button class="btn btn-danger btn-sm" onclick="deletePoinExchange('${item.key}')">🗑</button></div>`).join(''):'<p style="color:var(--text-muted)">Belum ada item</p>';
+}
+
+async function addPoinExchangeItem(){
+  const name=prompt('Nama hadiah penukaran:');if(!name)return;
+  const points=parseInt(prompt('Jumlah poin dibutuhkan:'));if(isNaN(points)||points<=0)return;
+  await push(ref(db,'poinExchange'),{name,points});
+  loadPoinExchangeAdmin();toast('Item ditambah!');
+}
+async function deletePoinExchange(key){
+  if(!confirm('Hapus item?'))return;
+  await remove(ref(db,'poinExchange/'+key));
+  loadPoinExchangeAdmin();toast('Item dihapus!');
+}
+function changeAdminPin(){
+  const old=document.getElementById('oldPin').value;
+  const newP=document.getElementById('newPin').value;
+  const conf=document.getElementById('confirmPin').value;
+  if(old!==state.adminPin){toast('PIN lama salah!');return;}
+  if(newP.length!==4||isNaN(newP)){toast('PIN baru harus 4 digit angka!');return;}
+  if(newP!==conf){toast('Konfirmasi PIN tidak cocok!');return;}
+  state.adminPin=newP;
+  localStorage.setItem('adminPin',newP);
+  toast('PIN berhasil diubah!');
+  document.getElementById('oldPin').value='';
+  document.getElementById('newPin').value='';
+  document.getElementById('confirmPin').value='';
+}
+window.addPoinExchangeItem=addPoinExchangeItem;window.deletePoinExchange=deletePoinExchange;window.changeAdminPin=changeAdminPin;window.loadPoinExchangeAdmin=loadPoinExchangeAdmin;
+// ==============================
+// HISTORY BILLING ADMIN
+// ==============================
+async function renderHistoryBillingAdmin(el) {
+  const now = new Date();
+  el.innerHTML = `
+    <div style="margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:8px;">Filter Tanggal</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input type="date" id="histBillFrom" style="flex:1;min-width:130px;"
+          value="${new Date(now.getTime() - 7 * 86400000).toISOString().slice(0,10)}"/>
+        <input type="date" id="histBillTo" style="flex:1;min-width:130px;"
+          value="${now.toISOString().slice(0,10)}"/>
+        <button class="btn btn-primary btn-sm" onclick="loadHistoryBilling()">Filter</button>
+      </div>
+    </div>
+    <div id="histBillSummary" style="margin-bottom:12px;"></div>
+    <div id="histBillList"></div>
+  `;
+  loadHistoryBilling();
+}
+
+async function loadHistoryBilling() {
+  const fromVal = document.getElementById('histBillFrom')?.value;
+  const toVal = document.getElementById('histBillTo')?.value;
+  if (!fromVal || !toVal) return;
+  
+  const from = new Date(fromVal).getTime();
+  const to = new Date(toVal).getTime() + 86399999;
+  
+  const listEl = document.getElementById('histBillList');
+  const summaryEl = document.getElementById('histBillSummary');
+  if (!listEl) return;
+  
+  listEl.innerHTML = '<p style="color:var(--text-muted)">Loading...</p>';
+  summaryEl.innerHTML = '';
+  
+  // Ambil dari Firebase: billing dengan status 'done'
+  const snap = await get(ref(db, 'billings'));
+  
+  let billings = [];
+  if (snap.exists()) {
+    billings = Object.entries(snap.val())
+      .map(([k, v]) => ({ key: k, ...v }))
+      .filter(b => b.status === 'done' && b.endedAt >= from && b.endedAt <= to)
+      .sort((a, b) => b.endedAt - a.endedAt);
+  }
+  
+  // Hitung ringkasan
+  const totalIncome = billings.reduce((s, b) => s + (b.price || 0), 0);
+  const totalCash = billings.filter(b => b.payType === 'cash').reduce((s, b) => s + (b.price || 0), 0);
+  const totalNonCash = billings.filter(b => b.payType !== 'cash').reduce((s, b) => s + (b.price || 0), 0);
+  const totalMinutes = billings.reduce((s, b) => s + Math.round((b.duration || 0) / 60000), 0);
+  const totalHours = (totalMinutes / 60).toFixed(1);
+  
+  // Ringkasan per kategori
+  const byCategory = {};
+  billings.forEach(b => {
+    const cat = b.category || 'Lainnya';
+    if (!byCategory[cat]) byCategory[cat] = { count: 0, total: 0, cash: 0, noncash: 0, minutes: 0 };
+    byCategory[cat].count++;
+    byCategory[cat].total += b.price || 0;
+    byCategory[cat].minutes += Math.round((b.duration || 0) / 60000);
+    if (b.payType === 'cash') byCategory[cat].cash += b.price || 0;
+    else byCategory[cat].noncash += b.price || 0;
+  });
+  
+  summaryEl.innerHTML = `
+    <div class="grid-3" style="margin-bottom:10px;">
+      <div class="stat-card">
+        <div class="stat-label">Total Transaksi</div>
+        <div class="stat-val">${billings.length}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Pendapatan</div>
+        <div class="stat-val">${fmtRp(totalIncome)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Jam</div>
+        <div class="stat-val">${totalHours} <span style="font-size:.9rem;font-weight:400">jam</span></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:10px;">
+      <div class="stat-card">
+        <div class="stat-label">💵 Tunai</div>
+        <div class="stat-val">${fmtRp(totalCash)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">💳 Non-Tunai</div>
+        <div class="stat-val">${fmtRp(totalNonCash)}</div>
+      </div>
+    </div>
+    <div class="section-title" style="margin-bottom:8px;">Per Kategori</div>
+    ${Object.entries(byCategory).map(([cat, v]) => `
+      <div class="card" style="margin-bottom:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-weight:700">${cat}</div>
+          <span class="badge badge-mocha">${v.count} sesi</span>
+        </div>
+        <div class="grid-3">
+          <div><div class="stat-label">Tunai</div><div style="font-weight:600;font-size:.9rem">${fmtRp(v.cash)}</div></div>
+          <div><div class="stat-label">Non-Tunai</div><div style="font-weight:600;font-size:.9rem">${fmtRp(v.noncash)}</div></div>
+          <div><div class="stat-label">Total</div><div style="font-weight:700;color:var(--mocha-700);font-size:.9rem">${fmtRp(v.total)}</div></div>
+        </div>
+        <div class="stat-label" style="margin-top:4px;">Total Durasi: ${(v.minutes / 60).toFixed(1)} jam (${v.minutes} menit)</div>
+      </div>
+    `).join('') || ''}
+    <div class="section-title" style="margin-bottom:8px;">Detail Transaksi</div>
+  `;
+  
+  if (!billings.length) {
+    listEl.innerHTML = '<div class="empty-state"><p>Tidak ada billing selesai di periode ini</p></div>';
+    return;
+  }
+  
+  listEl.innerHTML = billings.map(b => `
+    <div class="card" style="margin-bottom:8px;border-left:4px solid var(--mocha-400);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;font-size:.95rem">${b.name || '-'}</div>
+          <div style="font-size:.78rem;color:var(--text-muted);margin-top:2px;">
+            ${b.category || '-'} • ${b.service || '-'} • ${b.package || '-'}
+          </div>
+          ${b.memberName
+            ? `<div style="font-size:.78rem;margin-top:2px;">👤 ${b.memberName} <span style="color:var(--text-muted)">(${b.memberId})</span></div>`
+            : `<div style="font-size:.78rem;color:var(--text-muted);margin-top:2px;">Umum / Non-Member</div>`
+          }
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700;font-size:1rem;color:var(--mocha-700)">${fmtRp(b.price || 0)}</div>
+          <span class="badge ${b.payType === 'cash' ? 'badge-success' : 'badge-info'}" style="margin-top:2px;">
+            ${b.payType === 'cash' ? '💵 Tunai' : '💳 Non-Tunai'}
+          </span>
+        </div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-size:.76rem;color:var(--text-muted);">
+        <span>🕐 Mulai: ${fmtDate(b.startTime)}</span>
+        <span>🏁 Selesai: ${fmtDate(b.endedAt)}</span>
+        <span>⏱ Durasi: ${Math.round((b.duration || 0) / 60000)} menit</span>
+      </div>
+      ${b.paid ? `<div style="margin-top:4px;font-size:.76rem;color:var(--text-muted);">Bayar: ${fmtRp(b.paid)} | Kembalian: ${fmtRp(b.change || 0)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+window.renderHistoryBillingAdmin = renderHistoryBillingAdmin;
+window.loadHistoryBilling = loadHistoryBilling;
+// Init
+renderActiveBillings();
 </script>
+<!-- Watermark Container -->
+<div class="watermark-container">
+    <p>Ini adalah pratinjau masih dalam tahap development<br>
+    ©2026 All Rights Reserved Mocharetta Dev</p>
+</div>
+
+<style>
+    .watermark-container {
+        /* Mengunci posisi agar tetap di layar saat di-scroll */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        
+        /* Menempatkan di lapisan paling bawah */
+        z-index: -9999;
+        
+        /* Pengaturan Tampilan */
+        opacity: 0.5;
+        text-align: center;
+        pointer-events: none; /* Agar klik tetap bisa menembus ke elemen di bawahnya */
+        user-select: none;    /* Agar teks tidak bisa diblok/copy secara tidak sengaja */
+        width: 100%;
+    }
+
+    .watermark-container p {
+        font-family: sans-serif;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ccc; /* Warna abu-abu netral agar tidak mengganggu konten utama */
+        margin: 0;
+        line-height: 1.5;
+    }
+</style>
 </body>
 </html>
